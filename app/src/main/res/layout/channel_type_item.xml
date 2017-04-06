@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="80dp"
+              android:layout_height="60dp"
+              android:background="@drawable/item_selector"
+              android:clickable="true"
+              android:clipChildren="false"
+              android:focusable="true"
+              android:focusableInTouchMode="true"
+              android:orientation="vertical"
+>
+	<TextView android:id="@+id/id_type" android:layout_width="match_parent"
+	          android:layout_height="match_parent"
+	          android:gravity="center"
+	          android:textColor="@android:color/white"
+	          android:textSize="20sp"
+	/>
+</LinearLayout>

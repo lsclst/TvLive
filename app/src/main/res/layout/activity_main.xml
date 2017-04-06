@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:clipChildren="false"
+	android:clipToPadding="false"
+	tools:context="com.rojao.tvlive.MainActivity">
+	<com.rojao.tvlive.weiget.channel.ChannelView android:id="@+id/id_channel_view"
+	                                             android:layout_width="wrap_content"
+	                                             android:layout_height="match_parent"
+	                                             android:layout_alignParentLeft="true"
+
+	/>
+
+	<com.rojao.tvlive.weiget.recommend.RecommendView android:id="@+id/id_recommend_view"
+	                                                 android:layout_width="match_parent"
+	                                                 android:layout_height="wrap_content"
+	                                                 android:layout_alignParentBottom="true"
+	                                                 android:visibility="gone"/>
+
+	<ImageView android:id="@+id/id_iv_ad" android:layout_width="wrap_content"
+	           android:layout_height="wrap_content"
+	           android:layout_alignParentBottom="true"
+	           android:layout_alignParentRight="true"
+	           android:layout_marginBottom="20dp"
+	           android:background="@drawable/shadow_ad"
+	           android:clickable="true"
+	           android:focusable="true"
+	           android:padding="10dp"
+	           android:src="@mipmap/ic_launcher"
+	           android:visibility="gone"/>
+</RelativeLayout>

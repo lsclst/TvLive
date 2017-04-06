@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/item_selector"
+              android:focusable="true"
+              android:orientation="vertical">
+	<TextView android:id="@+id/id_week" android:layout_width="match_parent"
+	          android:layout_height="0dp"
+	          android:layout_weight="3"
+	          android:gravity="center"
+	          android:textColor="@android:color/white"
+	          android:textSize="20sp"/>
+	<TextView android:id="@+id/id_day" android:layout_width="match_parent"
+	          android:layout_height="0dp"
+	          android:layout_weight="1"
+	          android:gravity="center"
+	          android:textColor="@android:color/white"
+	          android:textSize="15sp"/>
+</LinearLayout>
