@@ -1,3 +1,5 @@
 <resources>
 	<string name="app_name">TvLive</string>
+	<string name="backLook_tips">节\n目\n单</string>
+	<string name="channel_list_tips">频\n道\n列\n表</string>
 </resources>

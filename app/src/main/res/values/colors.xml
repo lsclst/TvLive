@@ -3,7 +3,8 @@
 	<color name="colorPrimary">#3F51B5</color>
 	<color name="colorPrimaryDark">#303F9F</color>
 	<color name="colorAccent">#FF4081</color>
-
+	<color name="colorBackLook_BG">#89060613</color>
+	<color name="borderColor">#6ed7f7</color>
 	<color name="recommendColor_1">#B3F08E</color>
 	<color name="recommendColor_2">#89E6D2</color>
 	<color name="recommendColor_3">#DB95AD</color>

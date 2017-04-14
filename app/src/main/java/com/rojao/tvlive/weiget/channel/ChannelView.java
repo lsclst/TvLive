@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
@@ -26,14 +28,28 @@ import java.util.Map;
  * @author lsc
  * @desc ${TODO}
  */
-public class ChannelView extends LinearLayout {
+public class ChannelView extends LinearLayout implements TvRecyclerView.OnInBorderKeyEventListener {
     private static final int KEY_FIRST = 0;
     private static final int KEY_SECOND = 1;
     private Handler mHandler = new Handler();
     private static final String TAG = ChannelView.class.getSimpleName();
 
+    @Override
+    public boolean onInBorderKeyEvent(int direction, int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            showBackLookView();
+        }
+        return false;
+    }
+
+    public void hide() {
+        if (getVisibility() == VISIBLE){
+            startAnimation(mAnimSlideOut);
+        }
+    }
+
     public interface OnChannelItemClickListener {
-        void onItemClick(int firstPos, int secondPos);
+        void onChannelItemClick(int firstPos, int secondPos);
     }
 
     public void setOnChannelItemClickListener(OnChannelItemClickListener listener) {
@@ -46,14 +62,17 @@ public class ChannelView extends LinearLayout {
     private TvRecyclerView mChannelTypesView, mChannelDetailView;
     private BackLookView mBackLookView;
     private Runnable mUpdateDetailRunnable;
+    private Animation mAnimSlideIn;
+    private Animation mAnimSlideOut;
     private TvRecyclerView.OnItemListener mChannelTypeListener = new TvRecyclerView.OnItemListener() {
         @Override
         public void onItemPreSelected(TvRecyclerView parent, View itemView, int position) {
-
+            itemView.animate().scaleX(1.0f).scaleY(1.0f).setDuration(300).start();
         }
 
         @Override
         public void onItemSelected(TvRecyclerView parent, View itemView, final int position) {
+            itemView.animate().scaleX(1.1f).scaleY(1.1f).setDuration(300).start();
             mPositionMap.put(KEY_FIRST, position);
             //防止快速滑动时detail切换太频繁
             if (mUpdateDetailRunnable != null) {
@@ -84,12 +103,12 @@ public class ChannelView extends LinearLayout {
     private TvRecyclerView.OnItemListener mChannelDetailListener = new TvRecyclerView.OnItemListener() {
         @Override
         public void onItemPreSelected(TvRecyclerView parent, View itemView, int position) {
-
+            itemView.animate().scaleX(1.0f).scaleY(1.0f).setDuration(300).start();
         }
 
         @Override
         public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
-
+            itemView.animate().scaleX(1.1f).scaleY(1.1f).setDuration(300).start();
         }
 
         @Override
@@ -102,7 +121,7 @@ public class ChannelView extends LinearLayout {
             mPositionMap.put(KEY_SECOND, position);
 
             if (mListener != null) {
-                mListener.onItemClick(mPositionMap.get(KEY_FIRST), mPositionMap.get(KEY_SECOND));
+                mListener.onChannelItemClick(mPositionMap.get(KEY_FIRST), mPositionMap.get(KEY_SECOND));
             }
         }
     };
@@ -126,7 +145,6 @@ public class ChannelView extends LinearLayout {
 
         mChannelTypesView = (TvRecyclerView) container.findViewById(R.id.id_Channel_type);
         mChannelDetailView = (TvRecyclerView) container.findViewById(R.id.id_Channel_type_detail);
-        mBackLookView = (BackLookView) container.findViewById(R.id.id_backLook_view);
 
         mChannelTypesView.setOnItemListener(mChannelTypeListener);
         mChannelDetailView.setOnItemListener(mChannelDetailListener);
@@ -137,6 +155,27 @@ public class ChannelView extends LinearLayout {
             mChannelTypesView.setAdapter(mChannelAdapter.getChannelTypeAdapter());
             mChannelDetailView.setAdapter(mChannelAdapter.getChannelDetailAdapter());
         }
+
+        mAnimSlideIn = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_in_left);
+        mAnimSlideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_anim);
+        mAnimSlideOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                setVisibility(GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mChannelDetailView.setInterceptKeyEvent(true);
+        mChannelDetailView.setOnInBorderKeyEventListener(this);
     }
 
     public void setChannelAdapter(ChannelAdapter adapter) {
@@ -148,22 +187,50 @@ public class ChannelView extends LinearLayout {
     }
 
 
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT &&
-                mChannelDetailView.getFocusedChild() != null && mBackLookView.getVisibility() == GONE) {
-            showBackLookView();
-        }
-        return super.dispatchKeyEvent(event);
-    }
-
     public void showBackLookView() {
 
-        if (mBackLookView != null && mBackLookView.getVisibility() == GONE) {
-            mBackLookView.setVisibility(VISIBLE);
-            mChannelDetailView.clearFocus();
-            mChannelTypesView.clearFocus();
+        if (mBackLookView != null) {
 
+            if (mBackLookView.getVisibility() == GONE) {
+                mBackLookView.setVisibility(VISIBLE);
+            }
+            mBackLookView.startAnimation(mAnimSlideIn);
+
+            setVisibility(GONE);
+            Log.e(TAG, "showBackLookView: ");
+            mBackLookView.requestFocus();
+
+        }
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+
+        if (visibility == VISIBLE) {
+            startAnimation(mAnimSlideIn);
+            final int detailOldSelectedPosition = mChannelDetailView.getOldSelectedPosition();
+
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mChannelDetailView.requestFocus();
+                    mChannelDetailView.setSelection(detailOldSelectedPosition);
+
+                }
+            }, 250);
+        }
+
+    }
+
+    public void attachBackLookView(BackLookView backLookView) {
+        this.mBackLookView = backLookView;
+    }
+
+    public void show() {
+        if (getVisibility() == GONE) {
+            setVisibility(VISIBLE);
+            startAnimation(mAnimSlideIn);
         }
     }
     /////////////////////////////////test

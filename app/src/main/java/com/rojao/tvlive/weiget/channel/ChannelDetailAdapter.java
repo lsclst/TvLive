@@ -24,6 +24,11 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<ChannelDetailAdap
 
 
     @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    @Override
     public DetailHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View content = LayoutInflater.from(parent.getContext()).inflate(R.layout.channel_detail_item, parent, false);

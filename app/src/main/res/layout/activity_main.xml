@@ -7,18 +7,54 @@
 	android:clipChildren="false"
 	android:clipToPadding="false"
 	tools:context="com.rojao.tvlive.MainActivity">
+
+	<TextView android:id="@+id/id_channel_no"
+	          android:layout_width="100dp"
+	          android:layout_height="100dp"
+	          android:layout_alignParentRight="true"
+	          android:layout_alignParentTop="true"
+	          android:gravity="center"
+	          android:text="2"
+	          android:textColor="@android:color/white"
+	          android:textSize="50sp"
+	          android:visibility="gone"/>
 	<com.rojao.tvlive.weiget.channel.ChannelView android:id="@+id/id_channel_view"
 	                                             android:layout_width="wrap_content"
 	                                             android:layout_height="match_parent"
 	                                             android:layout_alignParentLeft="true"
-
+	                                             android:visibility="gone"
 	/>
 
-	<com.rojao.tvlive.weiget.recommend.RecommendView android:id="@+id/id_recommend_view"
-	                                                 android:layout_width="match_parent"
-	                                                 android:layout_height="wrap_content"
-	                                                 android:layout_alignParentBottom="true"
-	                                                 android:visibility="gone"/>
+	<LinearLayout android:id="@+id/id_channel_list_tip"
+	              android:layout_width="wrap_content"
+	              android:layout_height="match_parent"
+	              android:layout_toRightOf="@id/id_channel_view"
+	              android:background="@color/colorBackLook_BG"
+	              android:gravity="center"
+	              android:orientation="vertical"
+	              android:visibility="gone"
+	>
+		<ImageView android:id="@+id/id_ic_arrow" android:layout_width="wrap_content"
+		           android:layout_height="wrap_content"
+		           android:layout_gravity="center"
+		           android:src="@drawable/ic_arrow"/>
+		<TextView android:id="@+id/id_tips" android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:layout_gravity="center"
+		          android:layout_marginTop="20dp"
+		          android:gravity="center"
+		          android:text="@string/backLook_tips"
+		          android:textColor="@android:color/white"
+		          android:textSize="15sp"
+		/>
+	</LinearLayout>
+
+	<com.rojao.tvlive.weiget.backlook.BackLookView android:id="@+id/id_backLook_view"
+	                                               android:layout_width="match_parent"
+	                                               android:layout_height="match_parent"
+	                                               android:layout_toRightOf="@id/id_channel_list_tip"
+	                                               android:visibility="gone"
+	/>
 
 	<ImageView android:id="@+id/id_iv_ad" android:layout_width="wrap_content"
 	           android:layout_height="wrap_content"

@@ -16,12 +16,12 @@
 			android:orientation="horizontal"
 			android:padding="5dp">
 			<TextView
+				android:id="@+id/id_title"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginLeft="10dp"
 
+				android:layout_marginLeft="10dp"
 				android:text="直播推荐"
-				android:id="@+id/id_title"
 				android:textColor="@android:color/white"/>
 			<TextView
 				android:id="@+id/id_audience"
@@ -44,4 +44,10 @@
 		app:tv_layoutManager="ListLayoutManager"
 		app:tv_selectedItemIsCentered="true"
 	/>
+
+	<com.rojao.tvlive.weiget.bridge.MainUpView android:id="@+id/id_mainUpView"
+	                                           android:layout_width="wrap_content"
+	                                           android:layout_height="wrap_content"/>
+
+
 </LinearLayout>

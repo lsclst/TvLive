@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import com.rojao.tvlive.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,6 +21,15 @@ import java.util.List;
 public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdapter.RecommendHolder> {
 
     private List<Integer> mDatas = new ArrayList<>();
+    private static final List<Integer> mColorIDs = Arrays.asList(R.color.recommendColor_1,
+            R.color.recommendColor_2, R.color.recommendColor_3,
+            R.color.recommendColor_4, R.color.recommendColor_5,
+            R.color.recommendColor_6, R.color.recommendColor_7,
+            R.color.recommendColor_8, R.color.recommendColor_4,
+            R.color.recommendColor_5,
+            R.color.recommendColor_6, R.color.recommendColor_7,
+            R.color.recommendColor_8
+    );
 
     @Override
     public RecommendHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -30,7 +40,7 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
 
     @Override
     public void onBindViewHolder(RecommendHolder holder, int position) {
-        holder.itemView.setBackgroundResource(mDatas.get(position));
+       holder.iv_recommend.setImageResource(mDatas.get(position));
     }
 
     @Override
