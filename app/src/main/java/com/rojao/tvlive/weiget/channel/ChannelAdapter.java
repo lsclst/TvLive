@@ -1,5 +1,7 @@
 package com.rojao.tvlive.weiget.channel;
 
+import com.rojao.tvlive.entity.Channel;
+
 import java.util.List;
 
 /**
@@ -33,7 +35,7 @@ public class ChannelAdapter {
         }
     }
 
-    public void setChannelDetails(List<String> details) {
+    public void setChannelDetails(List<Channel> details) {
         if (mChannelDetailAdapter != null) {
             mChannelDetailAdapter.setDetails(details);
         }

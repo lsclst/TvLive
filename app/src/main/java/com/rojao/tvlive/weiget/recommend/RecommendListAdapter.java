@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.rojao.tvlive.R;
 
@@ -40,7 +41,8 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
 
     @Override
     public void onBindViewHolder(RecommendHolder holder, int position) {
-       holder.iv_recommend.setImageResource(mDatas.get(position));
+        holder.iv_recommend.setImageResource(mDatas.get(position));
+        holder.tv_title.setText("速度与激情8");
     }
 
     @Override
@@ -55,14 +57,15 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
     }
 
 
-
     static class RecommendHolder extends RecyclerView.ViewHolder {
 
         ImageView iv_recommend;
+        TextView tv_title;
 
         public RecommendHolder(View itemView) {
             super(itemView);
             iv_recommend = (ImageView) itemView.findViewById(R.id.id_recommend_iv);
+            tv_title = (TextView) itemView.findViewById(R.id.id_title);
         }
     }
 }

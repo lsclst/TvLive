@@ -1,116 +1,171 @@
 package com.rojao.tvlive;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.Toast;
 
-import com.rojao.tvlive.weiget.backlook.BackLookView;
-import com.rojao.tvlive.weiget.channel.ChannelAdapter;
+import com.rojao.tvlive.ijkplayer.media.IjkVideoView;
+import com.rojao.tvlive.weiget.ChannelDialog;
+import com.rojao.tvlive.weiget.RecommendDialog;
 import com.rojao.tvlive.weiget.channel.ChannelView;
-import com.rojao.tvlive.weiget.recommend.RecommendDialog;
+import com.rojao.tvlive.weiget.recommend.RecommendView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import tv.danmaku.ijk.media.player.IMediaPlayer;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-public class MainActivity extends AppCompatActivity implements ChannelView.OnChannelItemClickListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String KEY_TYPE = "type";
     private static final String Key_VIDEOPATH = "videoPath";
-    private List<String> typeList;
-    private List<String> detailList;
-    private BackLookView mBackLookView;
-    private ChannelView mChannelView;
-    private ImageView mADIamgeView;
-    private LinearLayout mTipsView;
+    private static final String TYPE_LIVE = "live";
+    private static final String TYPE_VOD = "vod";
+    private static final String DEFAULT_PATH = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
     private String mVideoPath;
     private String mType;
+    private ImageView mADIamgeView;
+    private IjkVideoView mVideoPlayer;
+    private ChannelDialog mChannelDialog;
+    private RecommendDialog mRecommendDialog;
 
+
+    private ChannelView.OnChannelItemClickListener mOnChannelItemClickListener = new ChannelView.OnChannelItemClickListener() {
+        @Override
+        public void onChannelItemClick(int firstPos, int secondPos) {
+            Log.e(TAG, "first pos = " + firstPos + "second pos = " + secondPos);
+        }
+    };
+
+    private RecommendView.onRecommendItemClickListener mOnRecommendItemClickListener = new RecommendView.onRecommendItemClickListener() {
+        @Override
+        public void OnItemClick(String linkPath) {
+            Log.e(TAG, "OnItemClick: " + linkPath);
+        }
+    };
+    private long mLastTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mType = getIntent().getStringExtra(KEY_TYPE);
+        mType = getIntent().getStringExtra(KEY_TYPE) == null ? TYPE_LIVE : mType;
         mVideoPath = getIntent().getStringExtra(Key_VIDEOPATH);
-        typeList = getTypes();
-        detailList = getDetailList();
-        final ChannelAdapter adapter = new ChannelAdapter();
-        adapter.setChannelTypes(typeList);
-        mChannelView = (ChannelView) findViewById(R.id.id_channel_view);
-        mBackLookView = (BackLookView) findViewById(R.id.id_backLook_view);
-        mTipsView = (LinearLayout) findViewById(R.id.id_channel_list_tip);
         mADIamgeView = (ImageView) findViewById(R.id.id_iv_ad);
-        mChannelView.setChannelAdapter(adapter);
-        mChannelView.setOnChannelItemClickListener(this);
-        mChannelView.attachBackLookView(mBackLookView);
-        mBackLookView.attachChannelView(mChannelView);
+        mVideoPlayer = (IjkVideoView) findViewById(R.id.id_videoPlayer);
+        if (mType.equals(TYPE_LIVE)){
+            mVideoPath = DEFAULT_PATH;
+        }
+                initVideo();
     }
 
-    private List<String> getTypes() {
+    private void initVideo() {
+        IjkMediaPlayer.loadLibrariesOnce(null);
+        IjkMediaPlayer.native_profileBegin("libijkplayer.so");
+        mVideoPlayer.setVideoURI(Uri.parse(TextUtils.isEmpty(mVideoPath) ? DEFAULT_PATH : mVideoPath));
+        mVideoPlayer.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(IMediaPlayer mp) {
+                mVideoPlayer.start();
+            }
+        });
 
-        return new ArrayList<String>(Arrays.asList("常看", "高清", "标清", "付费", "少儿", "体育", "新闻"
-                , "电影", "卡通"
+        mVideoPlayer.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
+            @Override
+            public boolean onInfo(IMediaPlayer mp, int what, int extra) {
+                switch (what) {
+                    case IjkMediaPlayer.MEDIA_INFO_BUFFERING_START:
+                        break;
+                    case IjkMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
+                    case IjkMediaPlayer.MEDIA_INFO_BUFFERING_END:
+                        break;
+                }
+                return false;
+            }
+        });
 
-        ));
-    }
+        mVideoPlayer.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(IMediaPlayer mp) {
+                mVideoPlayer.stopPlayback();
+                mVideoPlayer.release(true);
+                mVideoPlayer.setVideoURI(Uri.parse(DEFAULT_PATH));
+            }
+        });
 
-    private List<String> getDetailList() {
-
-        return new ArrayList<String>(Arrays.asList("节目详情1", "节目详情2", "节目详情3", "节目详情4",
-                "节目详情5", "节目详情6",
-                "节目详情7", "节目详情8",
-                "节目详情7", "节目详情8",
-                "节目详情9", "节目详情10",
-                "节目详情11", "节目详情12",
-                "节目详情13", "节目详情14",
-                "节目详情15", "节目详情16"
-        ));
+//                mVideoPlayer.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
+//                    @Override
+//                    public boolean onError(IMediaPlayer mp, int what, int extra) {
+//                        if (mRetryTimes > CONNECTION_TIMES) {
+//                            new AlertDialog.Builder(LiveActivity.this)
+//                                    .setMessage("节目暂时不能播放")
+//                                    .setPositiveButton(R.string.VideoView_error_button,
+//                                            new DialogInterface.OnClickListener() {
+//                                                public void onClick(DialogInterface dialog, int whichButton) {
+//                                                    MainActivity.this.finish();
+//                                                }
+//                                            })
+//                                    .setCancelable(false)
+//                                    .show();
+//                        } else {
+//                            mVideoView.stopPlayback();
+//                            mVideoView.release(true);
+//                            mVideoView.setVideoURI(Uri.parse(mVideoUrl));
+//                        }
+//                        return false;
+//                    }
+//                });
     }
 
     @Override
-    public void onChannelItemClick(int firstPos, int secondPos) {
-
-        Log.e(TAG, "curitem: " + typeList.get(firstPos) + " : " + detailList.get(secondPos));
+    protected void onResume() {
+        super.onResume();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+                if (!mVideoPlayer.isBackgroundPlayEnabled()) {
+                    mVideoPlayer.stopPlayback();
+                    mVideoPlayer.release(true);
+                    mVideoPlayer.stopBackgroundPlay();
+                }
+                IjkMediaPlayer.native_profileEnd();
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.e(TAG, "keycode: " + keyCode);
-        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-            if (mChannelView != null) {
-                if (mChannelView.getVisibility() == View.GONE && mBackLookView.getVisibility() == View.GONE) {
-
-                    mChannelView.show();
-                }
-
+        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && TYPE_LIVE.equals(mType)) {
+            if (mChannelDialog == null) {
+                mChannelDialog = new ChannelDialog(this, mOnChannelItemClickListener);
             }
-        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mBackLookView.getVisibility() == View.VISIBLE || mChannelView.getVisibility() == View.VISIBLE) {
-                hideAllView();
-                return true;
+            if (!mChannelDialog.isShowing()) {
+                mChannelDialog.show(getWindow().getDecorView());
             }
-        }else if (keyCode == KeyEvent.KEYCODE_DPAD_UP){
-            new RecommendDialog(this).show(getWindow().getDecorView());
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+            if (mRecommendDialog == null) {
+                mRecommendDialog = new RecommendDialog(this, mOnRecommendItemClickListener);
+            }
+            if (!mRecommendDialog.isShowing()) {
+                mRecommendDialog.show(getWindow().getDecorView());
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
 
-    public void hideAllView() {
-        if (mBackLookView != null && mBackLookView.getVisibility() == View.VISIBLE) {
-            mBackLookView.setVisibility(View.GONE);
-        }
-        if (mChannelView != null ) {
-            mChannelView.hide();
-        }
-        if (mTipsView != null && mTipsView.getVisibility() == View.VISIBLE) {
-            mTipsView.setVisibility(View.GONE);
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - mLastTime > 2000) {
+            mLastTime = System.currentTimeMillis();
+            Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show();
+        } else {
+            finish();
         }
     }
 }

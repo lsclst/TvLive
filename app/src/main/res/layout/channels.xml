@@ -32,7 +32,6 @@
 	                                               app:tv_layoutManager="ListLayoutManager"
 	                                               app:tv_numRows="7"
 	                                               app:tv_selectedItemIsCentered="true"
-
 	/>
 
 	<View android:layout_width="2px"

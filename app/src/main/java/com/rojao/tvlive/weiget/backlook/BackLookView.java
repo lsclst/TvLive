@@ -33,9 +33,11 @@ public class BackLookView extends FrameLayout {
     private TvRecyclerView mBackLookDateList, mBackLookDetailList;
     private boolean isGoBackToChannel;
     private ChannelView mChannelView;
+    private ChannelView.OnChannelItemClickListener mOnChannelItemClickListener;
 
-    public interface onBackLookItemClickListner {
-        void onBackLookItemClick();
+    public void setOnChannelItemClickListener(ChannelView.OnChannelItemClickListener listener) {
+        mOnChannelItemClickListener = listener;
+
     }
 
     private TvRecyclerView.OnItemListener mBackLookDateListener = new TvRecyclerView.OnItemListener() {
@@ -59,7 +61,6 @@ public class BackLookView extends FrameLayout {
         @Override
         public void onItemClick(TvRecyclerView parent, View itemView, int position) {
 
-
         }
     };
 
@@ -81,6 +82,9 @@ public class BackLookView extends FrameLayout {
 
         @Override
         public void onItemClick(TvRecyclerView parent, View itemView, int position) {
+            if (mOnChannelItemClickListener != null) {
+                mOnChannelItemClickListener.onChannelItemClick(mBackLookDateList.getSelectedPosition(), mBackLookDetailList.getSelectedPosition());
+            }
 
         }
     };
@@ -107,7 +111,7 @@ public class BackLookView extends FrameLayout {
             public void run() {
                 mBackLookDateList.setSelection(0);
             }
-        }, 200);
+        }, 250);
         isGoBackToChannel = false;
         return super.requestFocus(direction, previouslyFocusedRect);
     }
@@ -209,14 +213,15 @@ public class BackLookView extends FrameLayout {
 
         @Override
         public DetailHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.channel_detail_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.back_look_detail_item, parent, false);
 
             return new DetailHolder(view);
         }
 
         @Override
         public void onBindViewHolder(DetailHolder holder, int position) {
-            holder.tv.setText("9:00 生活大爆炸(2)");
+            holder.tv_time.setText("10:00");
+            holder.tv_title.setText("生活大爆炸(2)");
         }
 
         @Override
@@ -225,11 +230,13 @@ public class BackLookView extends FrameLayout {
         }
 
         class DetailHolder extends RecyclerView.ViewHolder {
-            TextView tv;
+            TextView tv_title;
+            TextView tv_time;
 
             public DetailHolder(View itemView) {
                 super(itemView);
-                tv = (TextView) itemView.findViewById(R.id.id_detail);
+                tv_title = (TextView) itemView.findViewById(R.id.id_backLook_title);
+                tv_time = (TextView) itemView.findViewById(R.id.id_time);
             }
         }
     }
@@ -241,14 +248,19 @@ public class BackLookView extends FrameLayout {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
 
-        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN && (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
+        || event.getKeyCode() == KeyEvent.KEYCODE_BACK)) {
             if (mBackLookDateList.hasFocus() && mBackLookDateList.getSelectedPosition() == 0) {
                 if (!isGoBackToChannel) {
                     showChannelView();
                     Log.e(TAG, "showChannelView: ");
-                }
 
+                    return true;
+                }
                 isGoBackToChannel = true;
+
+
+
 
             }
         }

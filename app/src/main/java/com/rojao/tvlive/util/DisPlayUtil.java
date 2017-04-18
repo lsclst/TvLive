@@ -10,8 +10,13 @@ import android.content.Context;
  */
 public class DisPlayUtil {
 
-    public static int dpToPx(Context context,int dp){
+    public static int dpToPx(Context context, int dp) {
         float density = context.getResources().getDisplayMetrics().density;
-        return (int) (dp*density+0.5);
+        return (int) (dp * density + 0.5);
+    }
+
+    private static int pxToDp(Context context, int px) {
+        float density = context.getResources().getDisplayMetrics().density;
+        return (int) (px / density + 0.5);
     }
 }

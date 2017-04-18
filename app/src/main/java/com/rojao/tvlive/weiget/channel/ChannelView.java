@@ -1,6 +1,7 @@
 package com.rojao.tvlive.weiget.channel;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.util.AttributeSet;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.rojao.tvlive.R;
+import com.rojao.tvlive.network.WebService;
 import com.rojao.tvlive.weiget.backlook.BackLookView;
 
 import java.util.ArrayList;
@@ -34,10 +36,23 @@ public class ChannelView extends LinearLayout implements TvRecyclerView.OnInBord
     private Handler mHandler = new Handler();
     private static final String TAG = ChannelView.class.getSimpleName();
 
+    private onDismissPopUpwindowListener mOnDismissPopUpwindowListener;
+    public interface onDismissPopUpwindowListener {
+        void dismissPopWindow();
+    }
+
+    public void setOnDismissPopUpwindowListener(onDismissPopUpwindowListener listener){
+        mOnDismissPopUpwindowListener = listener;
+    }
     @Override
     public boolean onInBorderKeyEvent(int direction, int keyCode, KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-            showBackLookView();
+            ChannelDetailAdapter.DetailHolder holder = (ChannelDetailAdapter.DetailHolder) mChannelDetailView.findViewHolderForAdapterPosition(mChannelDetailView.getSelectedPosition());
+            Drawable[] drawables = holder.tv_detail.getCompoundDrawables();
+            if (drawables[2] != null){
+                showBackLookView();
+            }
+
         }
         return false;
     }
@@ -81,8 +96,8 @@ public class ChannelView extends LinearLayout implements TvRecyclerView.OnInBord
             mUpdateDetailRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    String type = mChannelAdapter.getChannelTypeAdapter().getChannelTypes().get(position);
-                    mChannelAdapter.getChannelDetailAdapter().setDetails(getDetails(type));
+                    int type = mChannelTypesView.getSelectedPosition();
+                    mChannelAdapter.getChannelDetailAdapter().setDetails(WebService.getInstance().getChannelDetail(type));
                 }
             };
 
@@ -223,16 +238,30 @@ public class ChannelView extends LinearLayout implements TvRecyclerView.OnInBord
 
     }
 
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (KeyEvent.ACTION_DOWN == event.getAction() && event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+            if (mBackLookView!= null &&mBackLookView.getVisibility() == GONE && mOnDismissPopUpwindowListener != null){
+                mOnDismissPopUpwindowListener.dismissPopWindow();
+
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    public void selectLastPos(){
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mChannelDetailView.requestDefaultFocus();
+            }
+        }, 250);
+    }
     public void attachBackLookView(BackLookView backLookView) {
         this.mBackLookView = backLookView;
     }
 
-    public void show() {
-        if (getVisibility() == GONE) {
-            setVisibility(VISIBLE);
-            startAnimation(mAnimSlideIn);
-        }
-    }
     /////////////////////////////////test
 
     private List<String> getDetails(String type) {

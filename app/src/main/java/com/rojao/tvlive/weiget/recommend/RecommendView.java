@@ -42,22 +42,37 @@ public class RecommendView extends LinearLayout {
             R.mipmap.recommend4, R.mipmap.recommend4);
 
     private TextView mTv_title, mTv_Audience;
+
+    public String getTv_title() {
+        return mTv_title.getText().toString();
+    }
+
+    public void setTv_title(String title) {
+        mTv_title.setText(title);
+    }
+
+    public String getTv_Audience() {
+        return mTv_Audience.getText().toString();
+    }
+
+    public void setTv_Audience(String audience) {
+        mTv_Audience.setText(audience);
+    }
+
     private TvRecyclerView mTvRecyclerView;
     private RecyclerViewBridge mRecyclerViewBridge;
     private TvRecyclerView.OnItemListener mItemListener = new TvRecyclerView.OnItemListener() {
         @Override
         public void onItemPreSelected(TvRecyclerView parent, View itemView, int position) {
 
-//            itemView.animate().scaleX(1.0f).scaleY(1.0f).setDuration(300).start();
 
             mRecyclerViewBridge.setUnFocusView(itemView);
         }
 
         @Override
         public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
-//            itemView.animate().scaleX(1.2f).scaleY(1.2f).setDuration(300).start();
 
-            mRecyclerViewBridge.setFocusView(itemView,1.2f);
+            mRecyclerViewBridge.setFocusView(itemView, 1.2f);
         }
 
         @Override
@@ -67,7 +82,9 @@ public class RecommendView extends LinearLayout {
 
         @Override
         public void onItemClick(TvRecyclerView parent, View itemView, int position) {
-
+            if (mOnRecommendItemClickListener != null) {
+                mOnRecommendItemClickListener.OnItemClick("link path is " + position);
+            }
         }
     };
 
@@ -115,4 +132,13 @@ public class RecommendView extends LinearLayout {
     }
 
 
+    public interface onRecommendItemClickListener {
+        void OnItemClick(String linkPath);
+    }
+
+    private onRecommendItemClickListener mOnRecommendItemClickListener;
+
+    public void setOnRecommendItemClickListener(onRecommendItemClickListener listener) {
+        mOnRecommendItemClickListener = listener;
+    }
 }

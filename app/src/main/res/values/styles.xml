@@ -6,10 +6,16 @@
 		<item name="colorPrimary">@color/colorPrimary</item>
 		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
 		<item name="colorAccent">@color/colorAccent</item>
+		<item name="android:windowBackground">@android:color/transparent</item>
 	</style>
 
 	<style name="recommend_dialog_anim_style">
 		<item name="android:windowEnterAnimation">@anim/pop_up_anim</item>
 		<item name="android:windowExitAnimation">@anim/pop_down_anim</item>
+	</style>
+
+	<style name="channel_dialog_anim_style">
+		<item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
+		<item name="android:windowExitAnimation">@anim/slide_out_anim</item>
 	</style>
 </resources>
