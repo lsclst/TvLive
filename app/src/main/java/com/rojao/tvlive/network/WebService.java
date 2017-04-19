@@ -1,5 +1,9 @@
 package com.rojao.tvlive.network;
 
+import android.content.Context;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.rojao.tvlive.entity.Channel;
 import com.rojao.tvlive.entity.Recommend;
 
@@ -15,6 +19,13 @@ import java.util.List;
  */
 public class WebService {
 
+    private static final String JSON = "[{\"assetId\":\"JSBYPPL02000008864481901\",\"vodActor\":\"布拉德·皮特|朱莉娅·罗伯茨|詹姆斯·甘多菲尼|J·K·西蒙斯|鲍勃·巴拉班\",\"vodDescription\":\"充满浪漫喜剧色彩的美国版《寻枪》，金发帅哥皮特携手大嘴甜心罗伯茨，配乐带有浓浓的墨西哥情调。小混混杰瑞运气有些背，顶头大哥命令他寻找古董枪，女友则勒令他金盆洗手，一番冥思苦想之后，他决定放手一博。\",\"vodDirector\":\"戈尔·维宾斯基\",\"vodDuration\":\"7380\",\"vodName\":\"危险情人\",\"vodPicpath\":\"http://122.97.219.210/images/thumb/2012/03/30/1001/201203300952001001z2554/201203300952001001z2554_250x344.jpg\",\"vodType\":\"1\",\"vodUrl\":\"http://122.97.219.210/yppl/2015/03/30/JSBYPPL02000008864481901.m3u8\",\"year\":\"2001\"},{\"assetId\":\"JSBYPPL020000291703\",\"vodActor\":\"贾斯汀·丁伯莱克|阿曼达·塞弗里德|奥利维亚·王尔德|约翰尼·盖尔克奇|Shyloh\n" +
+            "\t\tOostwald\",\"vodDescription\":\"在不太遥远的未来，人类的极限是25岁，此后自然寿命只有一年。通用货币就是时间，可以此交易延长寿命直至永生；自然，时间清零便是死亡。明星养眼，骨感+黑丝+烟熏，值得一提的是《生活大爆炸》中的莱纳德也有出演。\",\"vodDirector\":\"安德鲁·尼科尔\",\"vodDuration\":\"6420\",\"vodName\":\"时间规划局\",\"vodPicpath\":\"http://122.97.219.210/images/thumb/2012/03/12/1000/201203121408311000z0304/201203121408311000z0304_250x344.jpg\",\"vodType\":\"1\",\"vodUrl\":\"http://122.97.219.210/yppl/JSBYPPL020000291703.m3u8\",\"year\":\"2011\"},{\"assetId\":\"JSBYPPL020000309809\",\"vodActor\":\"卡尔·厄本|奥莉薇·瑟尔比|琳娜·海蒂|Deobia\n" +
+            "\t\tOparei|Langley\n" +
+            "\t\tKirkwood\",\"vodDescription\":\"翻拍自史泰龙95年的版本。在末世人类聚居超级城市中，外围是突变生物占据的辐射荒漠。这里新的执法者被称为特警判官，对犯罪拥有就地正法的至高权力。影片场面暴力，刺激，令人血脉贲张。\",\"vodDirector\":\"彼得·特拉维斯\",\"vodDuration\":\"5700\",\"vodName\":\"新特警判官\",\"vodPicpath\":\"http://122.97.219.210/images/thumb/2013/01/14/1000/201301141106211000z3f31/201301141106211000z3f31_250x344.jpg\",\"vodType\":\"1\",\"vodUrl\":\"http://122.97.219.210/yppl/JSBYPPL020000309809.m3u8\",\"year\":\"2012\"},{\"assetId\":\"JSBYPPL020000295209\",\"vodActor\":\"伊萨赫·德·班克尔|蒂尔达·斯文顿|盖尔·加西亚·贝纳尔|帕兹·德拉维尔塔|工藤夕贵\",\"vodDescription\":\"神秘兮兮的雇主、策划精密的谋杀，一个沉默的独行杀手，接受到一项神秘的任务，随后启程前往西班牙马德里，按照他们的指引，一步步逼近了他的目标……在这部明星云集的吉姆·贾木许的电影里依然能找到独立制片的影子。\",\"vodDirector\":\"吉姆·贾木许\",\"vodDuration\":\"6360\",\"vodName\":\"控制的极限\",\"vodPicpath\":\"http://122.97.219.210/images/thumb/2012/07/02/1000/201207021233201000z4aa6/201207021233201000z4aa6_250x344.jpg\",\"vodType\":\"1\",\"vodUrl\":\"http://122.97.219.210/yppl/JSBYPPL020000295209.m3u8\",\"year\":\"2009\"},{\"assetId\":\"JSBYPPL02000008879637901\",\"vodActor\":\"马特·狄龙|劳伦斯·菲什伯恩|让·雷诺|阿莫里·诺拉斯科|弗莱德·沃德|米洛·文堤米利亚|斯基特·乌尔里奇|哥伦布·绍特|安德烈？凯尼\",\"vodDescription\":\"好莱坞众银幕硬汉云集，“纯爷们”动作片！突发的意外却让情况彻底地扭转，他们不得不争分夺秒地进行补救，尽自己最大的努力挽回之前的错误，数百万美元突然变成了危险商品……\",\"vodDirector\":\"尼莫洛德·安塔尔\",\"vodDuration\":\"5280\",\"vodName\":\"激战运钞车\",\"vodPicpath\":\"http://122.97.219.210/images/thumb/2012/03/30/1000/201203300951121000z640a/201203300951121000z640a_250x344.jpg\",\"vodType\":\"1\",\"vodUrl\":\"http://122.97.219.210/yppl/2015/03/31/JSBYPPL02000008879637901.m3u8\",\"year\":\"2009\"},{\"assetId\":\"JSBYPPL02000009794055601\",\"vodActor\":\"王翔弘|童鑫|姚雨鑫|吴晴|唐佳成\",\"vodDescription\":\"照进人心灵的照相机。讲述蒙昊在古镇租下一座老宅，但老宅里出现的红衣女鬼惊吓到了蒙昊女友冉洁，慢慢的冉洁感觉到女鬼事件另有蹊跷并开始展开调查，在调查中怪异事件的真相开始浮出水面。\",\"vodDirector\":\"李庆城\",\"vodDuration\":\"5040\",\"vodName\":\"恐怖照相机\",\"vodPicpath\":\"http://122.97.219.210/images/thumb/2016/05/31/1000/201605311614441000z3533/201605311614441000z3533_480x660.jpg\",\"vodType\":\"1\",\"vodUrl\":\"http://122.97.219.210/yppl/2016/05/31/JSBYPPL02000009794055601.m3u8\",\"year\":\"2015\"},{\"assetId\":\"JSBYPPL020000286541\",\"vodActor\":\"Otto\n" +
+            "\t\tJespersen|Hans\n" +
+            "\t\tMorten\",\"vodDescription\":\"比央视《走近科学》好N倍，这部伪纪录片里的挪威风光秀丽壮观，群山峻岭，高山雪原，让人很享受。2008年的一天，挪威沃达大学的托马斯、乔安娜组成摄制组，前往偏远山区追踪猎熊人，而他们却发现了山中的巨型怪物。\",\"vodDirector\":\"安德烈·欧弗兰多\",\"vodDuration\":\"5940\",\"vodName\":\"追击巨怪\",\"vodPicpath\":\"http://122.97.219.210/images/ROJAO/201610101619531.jpg\",\"vodType\":\"1\",\"vodUrl\":\"http://122.97.219.210/yppl/JSBYPPL020000286541.m3u8\",\"year\":\"2010\"},{\"assetId\":\"JSBYPPL02000008986812601\",\"vodActor\":\"杰森·贝特曼|丽贝卡·豪尔|乔尔·埃哲顿|大卫·丹曼|蒂姆·格里芬|贝茜·菲利普斯\",\"vodDescription\":\"君子报仇永不晚。影片讲述一对夫妻搬了新的住处，但是却意外的收到了一个接一个的来自号称老同学送来的恶作剧礼物，随着时间的推移，他们慢慢发现，这不是恶作剧，而是对他们生命的威胁。\",\"vodDirector\":\"乔尔·埃哲顿\",\"vodDuration\":\"6420\",\"vodName\":\"致命礼物\",\"vodPicpath\":\"http://122.97.219.210/images/thumb/2016/03/30/1000/201603301505331000zd23d/201603301505331000zd23d_480x660.jpg\",\"vodType\":\"1\",\"vodUrl\":\"http://122.97.219.210/yppl/2016/03/30/JSBYPPL02000008986812601.m3u8\",\"year\":\"2015\"},{\"assetId\":\"JSBYPPL020000278031\",\"vodActor\":\"格蕾塔·葛韦格|亚当·布罗迪|安娜蕾·提普顿|梅歌林·艾奇坤沃克|卡莉·麦克勒摩尔\",\"vodDescription\":\"一部关注大学校园男权、女权及性别歧视的影片。主要讲述了两位少女去“防止自杀中心”当志愿者的故事，刻画了少女成长中的焦虑与自省。这部电影集青春、音乐、浪漫等元素于一身。\",\"vodDirector\":\"惠特·斯蒂尔曼\",\"vodDuration\":\"5940\",\"vodName\":\"待解救的少女\",\"vodPicpath\":\"http://122.97.219.210/images/thumb/2012/11/09/1000/201211091006281000z9f9a/201211091006281000z9f9a_250x344.jpg\",\"vodType\":\"1\",\"vodUrl\":\"http://122.97.219.210/yppl/2015/04/08/JSBYPPL020000278031.m3u8\",\"year\":\"2012\"},{\"assetId\":\"JSBYPPL02000009247783201\",\"vodActor\":\"柳承范|高俊熙|柳贤静|梁益俊|金应洙|郑元中|金柱赫\",\"vodDescription\":\"韩式黑色幽默犯罪片。该片是一部极具动感的动作电影，由风格化著称的林常树导演所执导，该片故事围绕几个在交通事故现场发现巨额现金的年轻人展开，柳承范领衔众演员在片中奉献了个性张扬的表演。\",\"vodDirector\":\"林常树\",\"vodDuration\":\"6600\",\"vodName\":\"我的亲密敌人\",\"vodPicpath\":\"http://122.97.219.210/images/pic/2015/08/10/1000/201508101014561000z9213.jpg\",\"vodType\":\"1\",\"vodUrl\":\"http://122.97.219.210/yppl/2015/07/31/JSBYPPL02000009247783201.m3u8\",\"year\":\"2015\"}]\n" +
+            "\t";
     private static volatile WebService Instance;
 
     private WebService() {
@@ -295,15 +306,10 @@ public class WebService {
         return channels;
     }
 
-    public List<Recommend> getRecommends(int num) {
-        List<Recommend> recommends = new ArrayList<>();
-        for (int i = 0; i < num; i++) {
-            Recommend recommend = new Recommend();
-            recommend.setLink("http://xxxxxx.com");
-            recommend.setThumbnail("http://xxxxx.com");
-            recommend.setTitle("星球大战");
-            recommends.add(recommend);
-        }
+    public List<Recommend> getRecommends(Context context, int num) {
+        Gson gson = new Gson();
+        List<Recommend> recommends = gson.fromJson(JSON, new TypeToken<List<Recommend>>() {
+        }.getType());
         Collections.shuffle(recommends);
         return recommends;
 

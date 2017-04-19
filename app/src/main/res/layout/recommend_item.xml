@@ -19,6 +19,7 @@
 	          android:layout_gravity="bottom|left"
 	          android:layout_marginBottom="8dp"
 	          android:layout_marginLeft="8dp"
+	          android:background="#8b060608"
 	          android:text="hello"
 	          android:textColor="@android:color/white"
 	          android:textSize="20sp"/>

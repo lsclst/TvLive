@@ -8,8 +8,12 @@ import android.view.WindowManager;
 import android.widget.PopupWindow;
 
 import com.rojao.tvlive.R;
+import com.rojao.tvlive.entity.Recommend;
+import com.rojao.tvlive.network.WebService;
 import com.rojao.tvlive.util.DisPlayUtil;
 import com.rojao.tvlive.weiget.recommend.RecommendView;
+
+import java.util.List;
 
 /**
  * Created by lsc on 2017/4/14 0014.
@@ -20,12 +24,11 @@ import com.rojao.tvlive.weiget.recommend.RecommendView;
 public class RecommendDialog {
     private PopupWindow mPopupWindow;
     private RecommendView mRecommendView;
-    private RecommendView.onRecommendItemClickListener mOnRecommendItemClickListener;
+
 
     public RecommendDialog(Context context, RecommendView.onRecommendItemClickListener listener) {
         mRecommendView = new RecommendView(context);
-        mOnRecommendItemClickListener = listener;
-        mRecommendView.setOnRecommendItemClickListener(mOnRecommendItemClickListener);
+        mRecommendView.setOnRecommendItemClickListener(listener);
         mPopupWindow = new PopupWindow(context);
         mPopupWindow.setWidth(WindowManager.LayoutParams.MATCH_PARENT);
         mPopupWindow.setHeight(DisPlayUtil.dpToPx(context, 250));
@@ -34,13 +37,20 @@ public class RecommendDialog {
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
         mPopupWindow.setOutsideTouchable(false);
         mPopupWindow.setAnimationStyle(R.style.recommend_dialog_anim_style);
-
+        List<Recommend> recommends = WebService.getInstance().getRecommends(context, 10);
+        mRecommendView.setDatas(recommends);
     }
 
     public void show(View parent) {
         if (mPopupWindow != null && !mPopupWindow.isShowing()) {
             mPopupWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
             mRecommendView.selectCenter();
+        }
+    }
+
+    public void dismiss(){
+        if (mPopupWindow != null && mPopupWindow.isShowing()) {
+            mPopupWindow.dismiss();
         }
     }
 

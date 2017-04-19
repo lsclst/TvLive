@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.rojao.tvlive.R;
+import com.rojao.tvlive.entity.Recommend;
 import com.rojao.tvlive.weiget.bridge.MainUpView;
 import com.rojao.tvlive.weiget.bridge.RecyclerViewBridge;
 
@@ -42,6 +43,9 @@ public class RecommendView extends LinearLayout {
             R.mipmap.recommend4, R.mipmap.recommend4);
 
     private TextView mTv_title, mTv_Audience;
+    private RecommendListAdapter mAdapter;
+    private List<Recommend> mRecommends;
+    private MainUpView mainUpView;
 
     public String getTv_title() {
         return mTv_title.getText().toString();
@@ -83,7 +87,7 @@ public class RecommendView extends LinearLayout {
         @Override
         public void onItemClick(TvRecyclerView parent, View itemView, int position) {
             if (mOnRecommendItemClickListener != null) {
-                mOnRecommendItemClickListener.OnItemClick("link path is " + position);
+                mOnRecommendItemClickListener.OnItemClick(mRecommends.get(position).getLink());
             }
         }
     };
@@ -106,17 +110,27 @@ public class RecommendView extends LinearLayout {
         LinearLayout container = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.recommend_layout, this, true);
         mTv_title = (TextView) container.findViewById(R.id.id_title);
         mTv_Audience = (TextView) container.findViewById(R.id.id_audience);
-        MainUpView mainUpView = (MainUpView) findViewById(R.id.id_mainUpView);
+        mainUpView = (MainUpView) findViewById(R.id.id_mainUpView);
         mainUpView.setEffectBridge(new RecyclerViewBridge());
         mRecyclerViewBridge = (RecyclerViewBridge) mainUpView.getEffectBridge();
+        mRecyclerViewBridge.setTranDurAnimTime(200);
         mRecyclerViewBridge.setUpRectResource(R.drawable.focus_border);
         mTvRecyclerView = (TvRecyclerView) container.findViewById(R.id.id_recommend_list);
         mTvRecyclerView.setOnItemListener(mItemListener);
         mTvRecyclerView.setSpacingWithMargins(10, 8);
 
-        RecommendListAdapter adapter = new RecommendListAdapter();
-        adapter.setDatas(mImgs);
-        mTvRecyclerView.setAdapter(adapter);
+        mAdapter = new RecommendListAdapter();
+
+        mTvRecyclerView.setAdapter(mAdapter);
+    }
+
+    public void setDatas(List<Recommend> recommends) {
+        if (mAdapter == null) {
+            mAdapter = new RecommendListAdapter();
+            mTvRecyclerView.setAdapter(mAdapter);
+        }
+        mRecommends = recommends;
+        mAdapter.setDatas(recommends);
     }
 
     public void selectCenter() {
@@ -128,7 +142,7 @@ public class RecommendView extends LinearLayout {
                     mTvRecyclerView.setSelection(Math.round(adapter.getItemCount() / 2));
                 }
             }
-        }, 200);
+        }, 400);
     }
 
 

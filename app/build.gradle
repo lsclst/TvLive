@@ -27,5 +27,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'recyclerview-v7'
     }
     compile 'com.android.support:recyclerview-v7:24.2.1'
-    compile project(':superijkplayer')
+    //    compile project(':superijkplayer')
+    compile 'com.shuyu:GSYVideoPlayer:1.6.3'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }
