@@ -83,7 +83,7 @@ public class BackLookView extends FrameLayout {
         @Override
         public void onItemClick(TvRecyclerView parent, View itemView, int position) {
             if (mOnChannelItemClickListener != null) {
-                mOnChannelItemClickListener.onChannelItemClick(mBackLookDateList.getSelectedPosition(), mBackLookDetailList.getSelectedPosition());
+                mOnChannelItemClickListener.onChannelItemClick("backlookNO", "backLookLink");
             }
 
         }
@@ -249,7 +249,7 @@ public class BackLookView extends FrameLayout {
     public boolean dispatchKeyEvent(KeyEvent event) {
 
         if (event.getAction() == KeyEvent.ACTION_DOWN && (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
-        || event.getKeyCode() == KeyEvent.KEYCODE_BACK)) {
+                || event.getKeyCode() == KeyEvent.KEYCODE_BACK)) {
             if (mBackLookDateList.hasFocus() && mBackLookDateList.getSelectedPosition() == 0) {
                 if (!isGoBackToChannel) {
                     showChannelView();
@@ -258,8 +258,6 @@ public class BackLookView extends FrameLayout {
                     return true;
                 }
                 isGoBackToChannel = true;
-
-
 
 
             }

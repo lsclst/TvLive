@@ -42,17 +42,29 @@ public class MainActivity extends AppCompatActivity {
 
     private ChannelView.OnChannelItemClickListener mOnChannelItemClickListener = new ChannelView.OnChannelItemClickListener() {
         @Override
-        public void onChannelItemClick(int firstPos, int secondPos) {
-            Log.e(TAG, "first pos = " + firstPos + "second pos = " + secondPos);
-            //            mVideoPlayer.stopPlayback();
-            //            mVideoPlayer.postDelayed(new Runnable() {
-            //                @Override
-            //                public void run() {
-            //                    mVideoPlayer.setVideoPath(linkPath);
-            //                    mVideoPlayer.start();
-            //                }
-            //            }, 200);
+        public void onChannelItemClick(final String channelNo, final String linkPath) {
+            mChannelDialog.dismiss();
+            startLoading();
+            mVideoPlayer.stopPlayback();
+            mVideoPlayer.release(true);
+            mVideoPlayer.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.e(TAG, "run: " + linkPath);
+                    if (!TextUtils.isEmpty(linkPath)) {
+                        if (channelNo.equals("01")) {
+
+                            mVideoPlayer.setVideoPath("http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4");
+                        } else {
+
+                            mVideoPlayer.setVideoPath(linkPath);
+                        }
+                        mVideoPlayer.start();
+                    }
+                }
+            }, 300);
         }
+
     };
 
     private RecommendView.onRecommendItemClickListener mOnRecommendItemClickListener = new RecommendView.onRecommendItemClickListener() {
@@ -77,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         mVideoPlayer = (IjkVideoView) findViewById(R.id.id_videoPlayer);
         mLoadingView = (SlackLoadingView) findViewById(R.id.id_loadingView);
         mLoadingView.setDuration(500);
-        mType = getIntent().getStringExtra("type");
+        mType = getIntent().getStringExtra(KEY_TYPE);
         mVideoPath = getIntent().getStringExtra(Key_VIDEOPATH);
         Log.e(TAG, "onCreate: " + mType + " " + mVideoPath);
         if (TYPE_LIVE.equals(mType)) {
@@ -96,10 +108,11 @@ public class MainActivity extends AppCompatActivity {
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
         mVideoPlayer.setVideoURI(Uri.parse(mVideoPath));
+        mVideoPlayer.start();
         mVideoPlayer.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(IMediaPlayer mp) {
-                mVideoPlayer.start();
+
             }
         });
 
@@ -108,13 +121,13 @@ public class MainActivity extends AppCompatActivity {
             public boolean onInfo(IMediaPlayer mp, int what, int extra) {
                 switch (what) {
                     case IjkMediaPlayer.MEDIA_INFO_BUFFERING_START:
-                        mLoadingView.setVisibility(View.VISIBLE);
-                        mLoadingView.start();
+                        Log.e(TAG, "onInfo: buffering start");
+                        startLoading();
                         break;
                     case IjkMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
                     case IjkMediaPlayer.MEDIA_INFO_BUFFERING_END:
-                        mLoadingView.setVisibility(View.GONE);
-                        mLoadingView.reset();
+                        Log.e(TAG, "onInfo: buffering end");
+                        stopLoading();
                         break;
                 }
                 return false;
@@ -183,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             if (!mChannelDialog.isShowing()) {
                 mChannelDialog.show(getWindow().getDecorView());
             }
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
             if (mRecommendDialog == null) {
                 mRecommendDialog = new RecommendDialog(this, mOnRecommendItemClickListener);
             }
@@ -202,6 +215,21 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show();
         } else {
             finish();
+        }
+    }
+
+    public void startLoading() {
+        if (mLoadingView != null) {
+
+            mLoadingView.setVisibility(View.VISIBLE);
+            mLoadingView.start();
+        }
+    }
+
+    public void stopLoading() {
+        if (mLoadingView != null) {
+            mLoadingView.reset();
+            mLoadingView.setVisibility(View.GONE);
         }
     }
 }

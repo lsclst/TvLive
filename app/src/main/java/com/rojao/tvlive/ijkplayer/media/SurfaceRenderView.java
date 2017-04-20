@@ -137,6 +137,7 @@ public class SurfaceRenderView extends SurfaceView implements IRenderView {
                         (mp instanceof ISurfaceTextureHolder)) {
                     ISurfaceTextureHolder textureHolder = (ISurfaceTextureHolder) mp;
                     textureHolder.setSurfaceTexture(null);
+                    Log.e("---------", "bindToMediaPlayer: " );
                 }
                 mp.setDisplay(mSurfaceHolder);
             }

@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.rojao.tvlive.R;
+import com.rojao.tvlive.entity.Channel;
 import com.rojao.tvlive.network.WebService;
 import com.rojao.tvlive.weiget.backlook.BackLookView;
 
@@ -34,22 +35,25 @@ public class ChannelView extends LinearLayout implements TvRecyclerView.OnInBord
     private static final int KEY_FIRST = 0;
     private static final int KEY_SECOND = 1;
     private Handler mHandler = new Handler();
+    private List<Channel> mChannels;
     private static final String TAG = ChannelView.class.getSimpleName();
 
     private onDismissPopUpwindowListener mOnDismissPopUpwindowListener;
+
     public interface onDismissPopUpwindowListener {
         void dismissPopWindow();
     }
 
-    public void setOnDismissPopUpwindowListener(onDismissPopUpwindowListener listener){
+    public void setOnDismissPopUpwindowListener(onDismissPopUpwindowListener listener) {
         mOnDismissPopUpwindowListener = listener;
     }
+
     @Override
     public boolean onInBorderKeyEvent(int direction, int keyCode, KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
             ChannelDetailAdapter.DetailHolder holder = (ChannelDetailAdapter.DetailHolder) mChannelDetailView.findViewHolderForAdapterPosition(mChannelDetailView.getSelectedPosition());
             Drawable[] drawables = holder.tv_detail.getCompoundDrawables();
-            if (drawables[2] != null){
+            if (drawables[2] != null) {
                 showBackLookView();
             }
 
@@ -58,13 +62,13 @@ public class ChannelView extends LinearLayout implements TvRecyclerView.OnInBord
     }
 
     public void hide() {
-        if (getVisibility() == VISIBLE){
+        if (getVisibility() == VISIBLE) {
             startAnimation(mAnimSlideOut);
         }
     }
 
     public interface OnChannelItemClickListener {
-        void onChannelItemClick(int firstPos, int secondPos);
+        void onChannelItemClick(String channelNo, String linkPath);
     }
 
     public void setOnChannelItemClickListener(OnChannelItemClickListener listener) {
@@ -97,7 +101,8 @@ public class ChannelView extends LinearLayout implements TvRecyclerView.OnInBord
                 @Override
                 public void run() {
                     int type = mChannelTypesView.getSelectedPosition();
-                    mChannelAdapter.getChannelDetailAdapter().setDetails(WebService.getInstance().getChannelDetail(type));
+                    mChannels = WebService.getInstance().getChannelDetail(type);
+                    mChannelAdapter.getChannelDetailAdapter().setDetails(mChannels);
                 }
             };
 
@@ -136,7 +141,11 @@ public class ChannelView extends LinearLayout implements TvRecyclerView.OnInBord
             mPositionMap.put(KEY_SECOND, position);
 
             if (mListener != null) {
-                mListener.onChannelItemClick(mPositionMap.get(KEY_FIRST), mPositionMap.get(KEY_SECOND));
+                if (mChannels != null && mChannels.size() > 0) {
+                    Channel channel = mChannels.get(position);
+                    mListener.onChannelItemClick(channel.getChannelNo(), channel.getLinkPath());
+                }
+
             }
         }
     };
@@ -241,8 +250,8 @@ public class ChannelView extends LinearLayout implements TvRecyclerView.OnInBord
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (KeyEvent.ACTION_DOWN == event.getAction() && event.getKeyCode() == KeyEvent.KEYCODE_BACK){
-            if (mBackLookView!= null &&mBackLookView.getVisibility() == GONE && mOnDismissPopUpwindowListener != null){
+        if (KeyEvent.ACTION_DOWN == event.getAction() && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            if (mBackLookView != null && mBackLookView.getVisibility() == GONE && mOnDismissPopUpwindowListener != null) {
                 mOnDismissPopUpwindowListener.dismissPopWindow();
 
             }
@@ -250,7 +259,7 @@ public class ChannelView extends LinearLayout implements TvRecyclerView.OnInBord
         return super.dispatchKeyEvent(event);
     }
 
-    public void selectLastPos(){
+    public void selectLastPos() {
         postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -258,6 +267,7 @@ public class ChannelView extends LinearLayout implements TvRecyclerView.OnInBord
             }
         }, 250);
     }
+
     public void attachBackLookView(BackLookView backLookView) {
         this.mBackLookView = backLookView;
     }

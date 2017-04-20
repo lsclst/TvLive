@@ -1,7 +1,5 @@
 package com.rojao.tvlive.network;
 
-import android.content.Context;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.rojao.tvlive.entity.Channel;
@@ -26,9 +24,176 @@ public class WebService {
             "\t\tJespersen|Hans\n" +
             "\t\tMorten\",\"vodDescription\":\"比央视《走近科学》好N倍，这部伪纪录片里的挪威风光秀丽壮观，群山峻岭，高山雪原，让人很享受。2008年的一天，挪威沃达大学的托马斯、乔安娜组成摄制组，前往偏远山区追踪猎熊人，而他们却发现了山中的巨型怪物。\",\"vodDirector\":\"安德烈·欧弗兰多\",\"vodDuration\":\"5940\",\"vodName\":\"追击巨怪\",\"vodPicpath\":\"http://122.97.219.210/images/ROJAO/201610101619531.jpg\",\"vodType\":\"1\",\"vodUrl\":\"http://122.97.219.210/yppl/JSBYPPL020000286541.m3u8\",\"year\":\"2010\"},{\"assetId\":\"JSBYPPL02000008986812601\",\"vodActor\":\"杰森·贝特曼|丽贝卡·豪尔|乔尔·埃哲顿|大卫·丹曼|蒂姆·格里芬|贝茜·菲利普斯\",\"vodDescription\":\"君子报仇永不晚。影片讲述一对夫妻搬了新的住处，但是却意外的收到了一个接一个的来自号称老同学送来的恶作剧礼物，随着时间的推移，他们慢慢发现，这不是恶作剧，而是对他们生命的威胁。\",\"vodDirector\":\"乔尔·埃哲顿\",\"vodDuration\":\"6420\",\"vodName\":\"致命礼物\",\"vodPicpath\":\"http://122.97.219.210/images/thumb/2016/03/30/1000/201603301505331000zd23d/201603301505331000zd23d_480x660.jpg\",\"vodType\":\"1\",\"vodUrl\":\"http://122.97.219.210/yppl/2016/03/30/JSBYPPL02000008986812601.m3u8\",\"year\":\"2015\"},{\"assetId\":\"JSBYPPL020000278031\",\"vodActor\":\"格蕾塔·葛韦格|亚当·布罗迪|安娜蕾·提普顿|梅歌林·艾奇坤沃克|卡莉·麦克勒摩尔\",\"vodDescription\":\"一部关注大学校园男权、女权及性别歧视的影片。主要讲述了两位少女去“防止自杀中心”当志愿者的故事，刻画了少女成长中的焦虑与自省。这部电影集青春、音乐、浪漫等元素于一身。\",\"vodDirector\":\"惠特·斯蒂尔曼\",\"vodDuration\":\"5940\",\"vodName\":\"待解救的少女\",\"vodPicpath\":\"http://122.97.219.210/images/thumb/2012/11/09/1000/201211091006281000z9f9a/201211091006281000z9f9a_250x344.jpg\",\"vodType\":\"1\",\"vodUrl\":\"http://122.97.219.210/yppl/2015/04/08/JSBYPPL020000278031.m3u8\",\"year\":\"2012\"},{\"assetId\":\"JSBYPPL02000009247783201\",\"vodActor\":\"柳承范|高俊熙|柳贤静|梁益俊|金应洙|郑元中|金柱赫\",\"vodDescription\":\"韩式黑色幽默犯罪片。该片是一部极具动感的动作电影，由风格化著称的林常树导演所执导，该片故事围绕几个在交通事故现场发现巨额现金的年轻人展开，柳承范领衔众演员在片中奉献了个性张扬的表演。\",\"vodDirector\":\"林常树\",\"vodDuration\":\"6600\",\"vodName\":\"我的亲密敌人\",\"vodPicpath\":\"http://122.97.219.210/images/pic/2015/08/10/1000/201508101014561000z9213.jpg\",\"vodType\":\"1\",\"vodUrl\":\"http://122.97.219.210/yppl/2015/07/31/JSBYPPL02000009247783201.m3u8\",\"year\":\"2015\"}]\n" +
             "\t";
+
+    private static final String ALL_CHANNEL_JSON = "[\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920120924001000\",\n" +
+            "    \"channelName\": \"CCTV14\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv14_800/cctv14_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920120924001400\",\n" +
+            "    \"channelName\": \"CCTV3综艺\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv3_800/cctv3_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920120926002000\",\n" +
+            "    \"channelName\": \"CCTV4中文国际\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv4_800/cctv4_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920120920000000\",\n" +
+            "    \"channelName\": \"CCTV5体育\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv5_800/cctv5_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920121218006200\",\n" +
+            "    \"channelName\": \"CCTV6电影\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv6_800/cctv6_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920121218003800\",\n" +
+            "    \"channelName\": \"CCTV8电视剧\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv8_800/cctv8_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920120926001200\",\n" +
+            "    \"channelName\": \"CCTV1综合\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv1_800/cctv1_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920120907000600\",\n" +
+            "    \"channelName\": \"安徽卫视\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/ahws_800/ahws_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920120907001000\",\n" +
+            "    \"channelName\": \"东方卫视\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/dfws_800/dfws_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920120925000000\",\n" +
+            "    \"channelName\": \"广东卫视\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/gdws_800/gdws_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920120912001200\",\n" +
+            "    \"channelName\": \"湖南卫视\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/hnws_800/hnws_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920120926000200\",\n" +
+            "    \"channelName\": \"山东卫视\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/sdws_800/sdws_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920121218000600\",\n" +
+            "    \"channelName\": \"天津卫视\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/tjws_800/tjws_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920121218003400\",\n" +
+            "    \"channelName\": \"CCTV7\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv7_800/cctv7_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"9999999920140411000100\",\n" +
+            "    \"channelName\": \"CCTV9记录\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv9_800/cctv9_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"888002\",\n" +
+            "    \"channelName\": \"CCTV2财经\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv2_800/cctv2_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"888010\",\n" +
+            "    \"channelName\": \"CCTV10科教\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv10_800/cctv10_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"888011\",\n" +
+            "    \"channelName\": \"CCTV11戏曲\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv11_800/cctv11_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"888012\",\n" +
+            "    \"channelName\": \"CCTV12社会与法\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv12_800/cctv12_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"888013\",\n" +
+            "    \"channelName\": \"CCTV13新闻\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv13_800/cctv13_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"888015\",\n" +
+            "    \"channelName\": \"CCTV15音乐\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/cctv15_800/cctv15_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"888016\",\n" +
+            "    \"channelName\": \"江苏卫视\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/jsws_800/jsws_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"888017\",\n" +
+            "    \"channelName\": \"浙江卫视\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/zjws_800/zjws_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"888018\",\n" +
+            "    \"channelName\": \"江西卫视\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/jxws_800/jxws_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"888019\",\n" +
+            "    \"channelName\": \"陕西卫视\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/sxws_800/sxws_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"888020\",\n" +
+            "    \"channelName\": \"江苏综艺\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/jszy_800/jszy_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"888021\",\n" +
+            "    \"channelName\": \"苏州新闻综合\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/szxwzh_800/szxwzh_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"888022\",\n" +
+            "    \"channelName\": \"优漫卡通\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/ymkt_800/ymkt_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"3806131\",\n" +
+            "    \"channelName\": \"游戏风云\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/yxfy_800/yxfy_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"3806151\",\n" +
+            "    \"channelName\": \"昆山新闻综合\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/ksxwzh_800/ksxwzh_800.m3u8\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"channelCode\": \"3806161\",\n" +
+            "    \"channelName\": \"昆山社会生活\",\n" +
+            "    \"playUrl\": \"http://221.6.85.155/live/ksshsh_800/ksshsh_800.m3u8\"\n" +
+            "  }\n" +
+            "]";
+
     private static volatile WebService Instance;
+    private List<Channel> allChannels;
+    private Gson mGson = new Gson();
 
     private WebService() {
+        allChannels = mGson.fromJson(ALL_CHANNEL_JSON, new TypeToken<List<Channel>>() {
+        }.getType());
+    }
+
+    public List<Channel> getAllChannels() {
+        return allChannels;
     }
 
     public static WebService getInstance() {
@@ -82,19 +247,35 @@ public class WebService {
         List<Channel> channels = new ArrayList<>();
         Channel channel = new Channel("CCTV-1综合", "生活提示", type + "1");
         channel.setHasLookBack(true);
+        channel.setLinkPath("http://221.6.85.155/live/cctv1_800/cctv1_800.m3u8");
         Channel channel1 = new Channel("CCTV-2财经", " 交易时间", type + "2");
+        channel1.setLinkPath("http://221.6.85.155/live/cctv2_800/cctv2_800.m3u8");
         Channel channel2 = new Channel("CCTV-3综艺", " 非常6+1", type + "3");
+        channel2.setLinkPath("http://221.6.85.155/live/cctv3_800/cctv3_800.m3u8");
         Channel channel3 = new Channel("CCTV-4国际", " 走遍中国", type + "4");
+        channel3.setLinkPath("http://221.6.85.155/live/cctv4_800/cctv4_800.m3u8");
         Channel channel4 = new Channel("CCTV-5体育", " 欧冠开场哨", type + "5");
+        channel4.setLinkPath("http://221.6.85.155/live/cctv5_800/cctv5_800.m3u8");
         Channel channel5 = new Channel("CCTV-6电影", "电影 湄公河行动 中国", type + "6");
+        channel5.setLinkPath("http://221.6.85.155/live/cctv6_800/cctv6_800.m3u8");
         Channel channel6 = new Channel("CCTV-7军事", " 军旅人生", type + "7");
+        channel6.setLinkPath("http://221.6.85.155/live/cctv7_800/cctv7_800.m3u8");
         Channel channel7 = new Channel("CCTV-8电视剧", " 冰与火的青春第7集", type + "8");
+        channel7.setLinkPath("http://221.6.85.155/live/cctv8_800/cctv8_800.m3u8");
         Channel channel8 = new Channel("CCTV-9纪录", " 时代:金融风暴", type + "9");
-        Channel channel9 = new Channel("CCTV-10新闻", " 新闻直播间", type + "10");
+        channel8.setLinkPath("http://221.6.85.155/live/cctv9_800/cctv9_800.m3u8");
+        Channel channel9 = new Channel("CCTV-10科教", "人与自然", type + "10");
+        channel9.setLinkPath("http://221.6.85.155/live/cctv10_800/cctv10_800.m3u8");
         Channel channel10 = new Channel("CCTV-11戏曲", "名段欣赏", type + "11");
+        channel10.setLinkPath("http://221.6.85.155/live/cctv11_800/cctv11_800.m3u8");
         Channel channel11 = new Channel("CCTV-12法制", " 法律讲堂(文史版)", type + "12");
-        Channel channel12 = new Channel("CCTV-13音乐", " 风华国乐", type + "13");
-
+        channel11.setLinkPath("http://221.6.85.155/live/cctv12_800/cctv12_800.m3u8");
+        Channel channel12 = new Channel("CCTV-13新闻", " 新闻直播间", type + "13");
+        channel12.setLinkPath("http://221.6.85.155/live/cctv13_800/cctv13_800.m3u8");
+        Channel channel13 = new Channel("CCTV-14少儿", "猫和老鼠", type + "13");
+        channel12.setLinkPath("http://221.6.85.155/live/cctv14_800/cctv14_800.m3u8");
+        Channel channel14 = new Channel("CCTV-15音乐", " 风华国乐", type + "13");
+        channel12.setLinkPath("http://221.6.85.155/live/cctv15_800/cctv15_800.m3u8");
 
         channels.add(channel);
         channels.add(channel1);
@@ -109,7 +290,8 @@ public class WebService {
         channels.add(channel10);
         channels.add(channel11);
         channels.add(channel12);
-
+        channels.add(channel13);
+        channels.add(channel14);
 
         return channels;
 
@@ -118,14 +300,21 @@ public class WebService {
     private List<Channel> getAlwaysLook(int type) {
         List<Channel> channels = new ArrayList<>();
         Channel channel = new Channel("安徽卫视", "中国梦纪录片展播", type + "1");
+        channel.setLinkPath("http://221.6.85.155/live/ahws_800/ahws_800.m3u8");
         Channel channel1 = new Channel("广东卫视", "上午剧场:欢乐颂(35)", type + "2");
-        Channel channel2 = new Channel("深圳卫视", "精品剧场:利箭纵横(38)", type + "3");
+        channel1.setLinkPath("http://221.6.85.155/live/gdws_800/gdws_800.m3u8");
+        Channel channel2 = new Channel("东方卫视", "精品剧场:利箭纵横(38)", type + "3");
+        channel2.setLinkPath("http://221.6.85.155/live/dfws_800/dfws_800.m3u8");
         Channel channel3 = new Channel("江苏卫视", "上午剧场:小别离", type + "4");
+        channel3.setLinkPath("http://221.6.85.155/live/jsws_800/jsws_800.m3u8");
         Channel channel4 = new Channel("湖南卫视", "偶像独播剧场:璀璨人生(21)", type + "5");
+        channel4.setLinkPath("http://221.6.85.155/live/hnws_800/hnws_800.m3u8");
         Channel channel5 = new Channel("浙江卫视", "经典剧场:漂洋过海来看你 30", type + "6");
+        channel5.setLinkPath("http://221.6.85.155/live/zjws_800/zjws_800.m3u8");
         Channel channel6 = new Channel("CCTV-5体育", "直播2016/2017赛季NBA季后赛-灰熊-马刺(二)", type + "7");
+        channel6.setLinkPath("http://221.6.85.155/live/cctv5_800/cctv5_800.m3u8");
         Channel channel7 = new Channel("CCTV-6电影", "电影 鸿门宴传奇 中国", type + "8");
-
+        channel7.setLinkPath("http://221.6.85.155/live/cctv6_800/cctv6_800.m3u8");
 
         channels.add(channel);
         channels.add(channel1);
@@ -306,9 +495,8 @@ public class WebService {
         return channels;
     }
 
-    public List<Recommend> getRecommends(Context context, int num) {
-        Gson gson = new Gson();
-        List<Recommend> recommends = gson.fromJson(JSON, new TypeToken<List<Recommend>>() {
+    public List<Recommend> getRecommends(int num) {
+        List<Recommend> recommends = mGson.fromJson(JSON, new TypeToken<List<Recommend>>() {
         }.getType());
         Collections.shuffle(recommends);
         return recommends;

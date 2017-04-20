@@ -51,7 +51,7 @@ public class ChannelDialog {
         mChannelView.setOnDismissPopUpwindowListener(new ChannelView.onDismissPopUpwindowListener() {
             @Override
             public void dismissPopWindow() {
-                if (mPopupWindow!= null && mPopupWindow.isShowing()){
+                if (mPopupWindow != null && mPopupWindow.isShowing()) {
                     mPopupWindow.dismiss();
                 }
             }
@@ -79,5 +79,11 @@ public class ChannelDialog {
         return new ArrayList<String>(Arrays.asList("常看", "央视", "高清", "体育", "综艺", "新闻"
                 , "电影", "卡通", "少儿"
         ));
+    }
+
+    public void dismiss() {
+        if (mPopupWindow != null && mPopupWindow.isShowing()) {
+            mPopupWindow.dismiss();
+        }
     }
 }

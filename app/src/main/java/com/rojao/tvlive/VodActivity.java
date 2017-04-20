@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.rojao.tvlive.ijkplayer.media.IjkVideoView;
@@ -18,6 +19,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class VodActivity extends AppCompatActivity {
 
+    private static final String TAG = VodActivity.class.getSimpleName();
     private IjkVideoView mVideoPlayer;
     private SlackLoadingView mLoadingView;
     private String mVideoPath;
@@ -66,12 +68,14 @@ public class VodActivity extends AppCompatActivity {
             public boolean onInfo(IMediaPlayer mp, int what, int extra) {
                 switch (what) {
                     case IjkMediaPlayer.MEDIA_INFO_BUFFERING_START:
+                        Log.e(TAG, "onInfo: buffering start");
                         mLoadingView.setVisibility(View.VISIBLE);
                         mLoadingView.start();
                         break;
                     case IjkMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
                     case IjkMediaPlayer.MEDIA_INFO_BUFFERING_END:
                         mLoadingView.setVisibility(View.GONE);
+                        Log.e(TAG, "onInfo: buffering end");
                         mLoadingView.reset();
                         break;
                 }

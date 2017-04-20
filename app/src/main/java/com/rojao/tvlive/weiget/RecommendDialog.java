@@ -37,7 +37,7 @@ public class RecommendDialog {
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
         mPopupWindow.setOutsideTouchable(false);
         mPopupWindow.setAnimationStyle(R.style.recommend_dialog_anim_style);
-        List<Recommend> recommends = WebService.getInstance().getRecommends(context, 10);
+        List<Recommend> recommends = WebService.getInstance().getRecommends(10);
         mRecommendView.setDatas(recommends);
     }
 
@@ -48,7 +48,7 @@ public class RecommendDialog {
         }
     }
 
-    public void dismiss(){
+    public void dismiss() {
         if (mPopupWindow != null && mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }

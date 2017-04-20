@@ -159,10 +159,11 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     }
 
     public void setRenderView(IRenderView renderView) {
+
         if (mRenderView != null) {
             if (mMediaPlayer != null)
                 mMediaPlayer.setDisplay(null);
-
+            Log.e(TAG, "setRenderView: remove all renderview" );
             View renderUIView = mRenderView.getView();
             mRenderView.removeRenderCallback(mSHCallback);
             mRenderView = null;
@@ -331,8 +332,8 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 }
                 break;
                 case Settings.PV_PLAYER__IjkExoMediaPlayer: {
-//                    IjkExoMediaPlayer IjkExoMediaPlayer = new IjkExoMediaPlayer(mAppContext);
-//                    mMediaPlayer = IjkExoMediaPlayer;
+                    //                    IjkExoMediaPlayer IjkExoMediaPlayer = new IjkExoMediaPlayer(mAppContext);
+                    //                    mMediaPlayer = IjkExoMediaPlayer;
                 }
                 break;
                 case Settings.PV_PLAYER__AndroidMediaPlayer:
@@ -462,6 +463,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                         // we need), so we won't get a "surface changed" callback, so
                         // start the video here instead of in the callback.
                         if (mTargetState == STATE_PLAYING) {
+                            Log.e(TAG, "onPrepared() returned: 1");
                             start();
                             if (mMediaController != null) {
                                 mMediaController.show();
@@ -479,6 +481,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 // We don't know the video size yet, but should start anyway.
                 // The video size might be reported to us later.
                 if (mTargetState == STATE_PLAYING) {
+                    Log.e(TAG, "onPrepared: start 2" );
                     start();
                 }
             }
@@ -582,21 +585,21 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                             messageId = R.string.VideoView_error_text_unknown;
                         }
 
-//                        new AlertDialog.Builder(getContext())
-//                                .setMessage(messageId)
-//                                .setPositiveButton(R.string.VideoView_error_button,
-//                                        new DialogInterface.OnClickListener() {
-//                                            public void onClick(DialogInterface dialog, int whichButton) {
-//                                            /* If we get here, there is no onError listener, so
-//                                             * at least inform them that the video is over.
-//                                             */
-//                                                if (mOnCompletionListener != null) {
-//                                                    mOnCompletionListener.onCompletion(mMediaPlayer);
-//                                                }
-//                                            }
-//                                        })
-//                                .setCancelable(false)
-//                                .show();
+                        //                        new AlertDialog.Builder(getContext())
+                        //                                .setMessage(messageId)
+                        //                                .setPositiveButton(R.string.VideoView_error_button,
+                        //                                        new DialogInterface.OnClickListener() {
+                        //                                            public void onClick(DialogInterface dialog, int whichButton) {
+                        //                                            /* If we get here, there is no onError listener, so
+                        //                                             * at least inform them that the video is over.
+                        //                                             */
+                        //                                                if (mOnCompletionListener != null) {
+                        //                                                    mOnCompletionListener.onCompletion(mMediaPlayer);
+                        //                                                }
+                        //                                            }
+                        //                                        })
+                        //                                .setCancelable(false)
+                        //                                .show();
                     }
                     return true;
                 }
@@ -653,11 +656,16 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
 
     // REMOVED: mSHCallback
     private void bindSurfaceHolder(IMediaPlayer mp, IRenderView.ISurfaceHolder holder) {
-        if (mp == null)
+        Log.e(TAG, "bindSurfaceHolder: " );
+        if (mp == null) {
+            Log.d(TAG, "mp is null");
             return;
+        }
+
 
         if (holder == null) {
             mp.setDisplay(null);
+            Log.d(TAG, "holder is null");
             return;
         }
 
@@ -680,6 +688,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 if (mSeekWhenPrepared != 0) {
                     seekTo(mSeekWhenPrepared);
                 }
+                Log.e(TAG, "onSurfaceChanged: start 3" );
                 start();
             }
         }
@@ -692,8 +701,10 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
             }
 
             mSurfaceHolder = holder;
-            if (mMediaPlayer != null)
+            if (mMediaPlayer != null){
+                Log.e(TAG, "onSurfaceCreated: bindholder" );
                 bindSurfaceHolder(mMediaPlayer, holder);
+            }
             else
                 openVideo();
         }
@@ -705,6 +716,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 return;
             }
 
+            Log.e(TAG, "onSurfaceDestroyed: " );
             // after we return from this we can't use the surface any more
             mSurfaceHolder = null;
             // REMOVED: if (mMediaController != null) mMediaController.hide();
@@ -768,12 +780,14 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                     pause();
                     mMediaController.show();
                 } else {
+                    Log.e(TAG, "onKeyDown: start 4");
                     start();
                     mMediaController.hide();
                 }
                 return true;
             } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY) {
                 if (!mMediaPlayer.isPlaying()) {
+                    Log.e(TAG, "onKeyDown: stat 5" );
                     start();
                     mMediaController.hide();
                 }
@@ -803,7 +817,10 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
 
     @Override
     public void start() {
+
         if (isInPlaybackState()) {
+            Log.e(TAG, "start: "+mSurfaceHolder.getSurfaceHolder().getSurface().isValid() );
+            Log.e(TAG, "start: "+mSurfaceHolder.getSurfaceHolder() +"view = "+ getmRenderView().getView());
             mMediaPlayer.start();
             mCurrentState = STATE_PLAYING;
         }
@@ -913,7 +930,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
             IRenderView.AR_ASPECT_FIT_PARENT,
             IRenderView.AR_ASPECT_FILL_PARENT,
             IRenderView.AR_ASPECT_WRAP_CONTENT,
-             IRenderView.AR_MATCH_PARENT,
+            IRenderView.AR_MATCH_PARENT,
             IRenderView.AR_16_9_FIT_PARENT,
             IRenderView.AR_4_3_FIT_PARENT};
     private int mCurrentAspectRatioIndex = 3;
