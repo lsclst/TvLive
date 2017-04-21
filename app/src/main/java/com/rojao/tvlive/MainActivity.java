@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             mChannelDialog.dismiss();
             startLoading();
             mVideoPlayer.stopPlayback();
-//            mVideoPlayer.release(true);
+            //            mVideoPlayer.release(true);
             if (!TextUtils.isEmpty(linkPath)) {
                 if (channelNo.equals("01")) {
 
@@ -82,18 +82,17 @@ public class MainActivity extends AppCompatActivity {
         mADIamgeView = (ImageView) findViewById(R.id.id_iv_ad);
         mVideoPlayer = (IjkVideoView) findViewById(R.id.id_videoPlayer);
         mLoadingView = (SlackLoadingView) findViewById(R.id.id_loadingView);
-        mLoadingView.setDuration(500);
         mType = getIntent().getStringExtra(KEY_TYPE);
         mVideoPath = getIntent().getStringExtra(Key_VIDEOPATH);
         Log.e(TAG, "onCreate: " + mType + " " + mVideoPath);
-        if (!TYPE_LIVE.equals(mType)) {
+        if (mType == null) {
             mType = TYPE_LIVE;
         }
         if (TextUtils.isEmpty(mVideoPath)) {
             mVideoPath = DEFAULT_PATH;
         }
         startLoading();
-        initVideo();
+
     }
 
     private void initVideo() {
@@ -165,11 +164,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        initVideo();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        Log.e(TAG, "onStop: " );
         if (!mVideoPlayer.isBackgroundPlayEnabled()) {
             mVideoPlayer.stopPlayback();
             mVideoPlayer.release(true);
@@ -180,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.e(TAG, "keycode: " + keyCode + "type = "+mType);
+        Log.e(TAG, "keycode: " + keyCode + "type = " + mType);
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && TYPE_LIVE.equals(mType)) {
             if (mChannelDialog == null) {
                 mChannelDialog = new ChannelDialog(this, mOnChannelItemClickListener);

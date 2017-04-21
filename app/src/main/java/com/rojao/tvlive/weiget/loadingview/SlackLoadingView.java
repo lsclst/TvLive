@@ -33,10 +33,10 @@ public class SlackLoadingView extends View {
     //最大间隔时长
     private final int MAX_DURATION = 3000;
     //最小间隔时长
-    private final int MIN_DURATION = 600;
+    private final int MIN_DURATION = 800;
 
     private Paint mPaint;
-    private int[] mColors = new int[]{0xB07ECBDA, 0xB0E6A92C, 0xB0D6014D, 0xB05ABA94};
+    private int[] mColors = new int[]{0xFF7ECBDA, 0xFFE6A92C, 0xFFD6014D, 0xFF5ABA94};
     private int mWidth, mHeight;
     //动画间隔时长
     private int mDuration = MIN_DURATION;

@@ -39,6 +39,7 @@ public class VodActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         initVideo();
+        startLoading();
     }
 
     private void initVideo() {
@@ -69,14 +70,12 @@ public class VodActivity extends AppCompatActivity {
                 switch (what) {
                     case IjkMediaPlayer.MEDIA_INFO_BUFFERING_START:
                         Log.e(TAG, "onInfo: buffering start");
-                        mLoadingView.setVisibility(View.VISIBLE);
-                        mLoadingView.start();
+                      startLoading();
                         break;
                     case IjkMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
                     case IjkMediaPlayer.MEDIA_INFO_BUFFERING_END:
-                        mLoadingView.setVisibility(View.GONE);
                         Log.e(TAG, "onInfo: buffering end");
-                        mLoadingView.reset();
+                        stopLoading();
                         break;
                 }
                 return false;
@@ -108,5 +107,18 @@ public class VodActivity extends AppCompatActivity {
         intent.putExtra(MainActivity.Key_VIDEOPATH, videoPath);
         context.startActivity(intent);
     }
+    public void startLoading() {
+        if (mLoadingView != null) {
 
+            mLoadingView.setVisibility(View.VISIBLE);
+            mLoadingView.start();
+        }
+    }
+
+    public void stopLoading() {
+        if (mLoadingView != null) {
+            mLoadingView.reset();
+            mLoadingView.setVisibility(View.GONE);
+        }
+    }
 }

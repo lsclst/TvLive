@@ -266,10 +266,8 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
 
     public void stopPlayback() {
         if (mMediaPlayer != null) {
-            Log.e(TAG, "before stopPlayback: "+mSurfaceHolder.getSurfaceHolder().getSurface().isValid() );
             mMediaPlayer.stop();
             mMediaPlayer.release();
-            Log.e(TAG, "after stopPlayback: "+mSurfaceHolder.getSurfaceHolder().getSurface().isValid() );
 //            mMediaPlayer.setDisplay(null);
             mMediaPlayer = null;
             if (mHudViewHolder != null)
@@ -965,10 +963,6 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
 
     private void initRenders() {
         mAllRenders.clear();
-        if (mRenderView != null){
-            removeView(mRenderView.getView());
-        }
-
         if (mSettings.getEnableSurfaceView())
             mAllRenders.add(RENDER_SURFACE_VIEW);
         if (mSettings.getEnableTextureView() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
