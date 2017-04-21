@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
@@ -32,7 +33,7 @@ public class SlackLoadingView extends View {
     //最大间隔时长
     private final int MAX_DURATION = 3000;
     //最小间隔时长
-    private final int MIN_DURATION = 500;
+    private final int MIN_DURATION = 600;
 
     private Paint mPaint;
     private int[] mColors = new int[]{0xB07ECBDA, 0xB0E6A92C, 0xB0D6014D, 0xB05ABA94};
@@ -57,6 +58,10 @@ public class SlackLoadingView extends View {
     private float mCircleY;
     //第几部动画
     private int mStep;
+    private AnimatorSet mCRLCAnimSet;
+    private ValueAnimator canvasRotateAnim;
+    private AnimatorSet mCRCCAnimset;
+    private ValueAnimator lineWidthAnim;
 
     public SlackLoadingView(Context context) {
         this(context, null);
@@ -158,45 +163,53 @@ public class SlackLoadingView extends View {
      */
     private void startCRLCAnim() {
 
-        Collection<Animator> animList = new ArrayList<>();
+        if (mCRLCAnimSet == null) {
+            Collection<Animator> animList = new ArrayList<>();
 
-        ValueAnimator canvasRotateAnim = ValueAnimator.ofInt(CANVAS_ROTATE_ANGLE + 0, CANVAS_ROTATE_ANGLE + 360);
-        canvasRotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mCanvasAngle = (int) animation.getAnimatedValue();
-            }
-        });
-
-        animList.add(canvasRotateAnim);
-
-        ValueAnimator lineWidthAnim = ValueAnimator.ofFloat(mEntireLineLength, -mEntireLineLength);
-        lineWidthAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mLineLength = (float) animation.getAnimatedValue();
-                invalidate();
-            }
-        });
-
-        animList.add(lineWidthAnim);
-
-        AnimatorSet animationSet = new AnimatorSet();
-        animationSet.setDuration(mDuration);
-        animationSet.playTogether(animList);
-        animationSet.setInterpolator(new LinearInterpolator());
-        animationSet.addListener(new AnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (mStatus == STATUS_LOADING) {
-                    mStep++;
-                    startCRAnim();
+            ValueAnimator canvasRotateAnim = ValueAnimator.ofInt(CANVAS_ROTATE_ANGLE + 0, CANVAS_ROTATE_ANGLE + 360);
+            canvasRotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mCanvasAngle = (int) animation.getAnimatedValue();
                 }
-            }
-        });
-        animationSet.start();
+            });
 
-        mAnimList.add(animationSet);
+            animList.add(canvasRotateAnim);
+
+            ValueAnimator lineWidthAnim = ValueAnimator.ofFloat(mEntireLineLength, -mEntireLineLength);
+            lineWidthAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mLineLength = (float) animation.getAnimatedValue();
+                    invalidate();
+                }
+            });
+
+            animList.add(lineWidthAnim);
+
+            mCRLCAnimSet = new AnimatorSet();
+            mCRLCAnimSet.setDuration(mDuration);
+            mCRLCAnimSet.playTogether(animList);
+            mCRLCAnimSet.setInterpolator(new LinearInterpolator());
+            mAnimList.add(mCRLCAnimSet);
+            mCRLCAnimSet.addListener(new AnimatorListener() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    Log.d("@=>", "动画1结束");
+                    if (mStatus == STATUS_LOADING) {
+                        mStep++;
+                        startCRAnim();
+                    }
+                }
+            });
+        } else if (mCRLCAnimSet.isRunning()){
+            mCRLCAnimSet.cancel();
+        }
+
+
+        mCRLCAnimSet.start();
+
+
     }
 
     /**
@@ -206,28 +219,35 @@ public class SlackLoadingView extends View {
      * 画布旋转动画
      */
     private void startCRAnim() {
-        ValueAnimator canvasRotateAnim = ValueAnimator.ofInt(mCanvasAngle, mCanvasAngle + 180);
-        canvasRotateAnim.setDuration(mDuration / 2);
-        canvasRotateAnim.setInterpolator(new LinearInterpolator());
-        canvasRotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mCanvasAngle = (int) animation.getAnimatedValue();
-                invalidate();
-            }
-        });
-        canvasRotateAnim.addListener(new AnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (mStatus == STATUS_LOADING) {
-                    mStep++;
-                    startCRCCAnim();
+        if (canvasRotateAnim == null) {
+            canvasRotateAnim = ValueAnimator.ofInt(mCanvasAngle, mCanvasAngle + 180);
+            canvasRotateAnim.setDuration(mDuration / 2);
+            canvasRotateAnim.setInterpolator(new LinearInterpolator());
+            canvasRotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mCanvasAngle = (int) animation.getAnimatedValue();
+                    invalidate();
                 }
-            }
-        });
+            });
+            canvasRotateAnim.addListener(new AnimatorListener() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    Log.d("@=>", "动画2结束");
+                    if (mStatus == STATUS_LOADING) {
+                        mStep++;
+                        startCRCCAnim();
+                    }
+                }
+            });
+            mAnimList.add(canvasRotateAnim);
+        } else if (canvasRotateAnim.isRunning()){
+            canvasRotateAnim.cancel();
+        }
+
         canvasRotateAnim.start();
 
-        mAnimList.add(canvasRotateAnim);
+
     }
 
     /**
@@ -237,45 +257,52 @@ public class SlackLoadingView extends View {
      * 画布旋转圆圈变化动画
      */
     private void startCRCCAnim() {
-        Collection<Animator> animList = new ArrayList<>();
+        if (mCRCCAnimset == null) {
+            Collection<Animator> animList = new ArrayList<>();
 
-        ValueAnimator canvasRotateAnim = ValueAnimator.ofInt(mCanvasAngle, mCanvasAngle + 90, mCanvasAngle + 180);
-        canvasRotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mCanvasAngle = (int) animation.getAnimatedValue();
-            }
-        });
-
-        animList.add(canvasRotateAnim);
-
-        ValueAnimator circleYAnim = ValueAnimator.ofFloat(mEntireLineLength, mEntireLineLength / 4, mEntireLineLength);
-        circleYAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mCircleY = (float) animation.getAnimatedValue();
-                invalidate();
-            }
-        });
-
-        animList.add(circleYAnim);
-
-        AnimatorSet animationSet = new AnimatorSet();
-        animationSet.setDuration(mDuration);
-        animationSet.playTogether(animList);
-        animationSet.setInterpolator(new LinearInterpolator());
-        animationSet.addListener(new AnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (mStatus == STATUS_LOADING) {
-                    mStep++;
-                    startLCAnim();
+            ValueAnimator canvasRotateAnim = ValueAnimator.ofInt(mCanvasAngle, mCanvasAngle + 90, mCanvasAngle + 180);
+            canvasRotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mCanvasAngle = (int) animation.getAnimatedValue();
                 }
-            }
-        });
-        animationSet.start();
+            });
 
-        mAnimList.add(animationSet);
+            animList.add(canvasRotateAnim);
+
+            ValueAnimator circleYAnim = ValueAnimator.ofFloat(mEntireLineLength, mEntireLineLength / 4, mEntireLineLength);
+            circleYAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mCircleY = (float) animation.getAnimatedValue();
+                    invalidate();
+                }
+            });
+
+            animList.add(circleYAnim);
+
+            mCRCCAnimset = new AnimatorSet();
+            mCRCCAnimset.setDuration(mDuration);
+            mCRCCAnimset.playTogether(animList);
+            mCRCCAnimset.setInterpolator(new LinearInterpolator());
+            mCRCCAnimset.addListener(new AnimatorListener() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    Log.d("@=>", "动画3结束");
+                    if (mStatus == STATUS_LOADING) {
+                        mStep++;
+                        startLCAnim();
+                    }
+                }
+            });
+            mAnimList.add(mCRCCAnimset);
+        } else if (mCRCCAnimset.isRunning()){
+            mCRCCAnimset.cancel();
+        }
+
+        mCRCCAnimset.start();
+
+
     }
 
     /**
@@ -285,28 +312,35 @@ public class SlackLoadingView extends View {
      * 线条变化动画
      */
     private void startLCAnim() {
-        ValueAnimator lineWidthAnim = ValueAnimator.ofFloat(mEntireLineLength - dp2px(getContext(), 1), -mEntireLineLength);
-        lineWidthAnim.setDuration(mDuration);
-        lineWidthAnim.setInterpolator(new LinearInterpolator());
-        lineWidthAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mLineLength = (float) animation.getAnimatedValue();
-                invalidate();
-            }
-        });
-        lineWidthAnim.addListener(new AnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (mStatus == STATUS_LOADING) {
-                    mStep++;
-                    startCRLCAnim();
+        if (lineWidthAnim == null) {
+            lineWidthAnim = ValueAnimator.ofFloat(mEntireLineLength - dp2px(getContext(), 1), -mEntireLineLength);
+            lineWidthAnim.setDuration(mDuration);
+            lineWidthAnim.setInterpolator(new LinearInterpolator());
+            lineWidthAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mLineLength = (float) animation.getAnimatedValue();
+                    invalidate();
                 }
-            }
-        });
+            });
+            lineWidthAnim.addListener(new AnimatorListener() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    Log.d("@=>", "动画4结束");
+                    if (mStatus == STATUS_LOADING) {
+                        mStep++;
+                        startCRLCAnim();
+                    }
+                }
+            });
+            mAnimList.add(lineWidthAnim);
+        } else if (lineWidthAnim.isRunning()){
+            lineWidthAnim.cancel();
+        }
+
         lineWidthAnim.start();
 
-        mAnimList.add(lineWidthAnim);
+
     }
 
     public void setLineLength(float scale) {
@@ -321,7 +355,6 @@ public class SlackLoadingView extends View {
 
     public void start() {
         if (mStatus == STATUS_STILL) {
-            mAnimList.clear();
             mStatus = STATUS_LOADING;
             startCRLCAnim();
         }
@@ -343,4 +376,22 @@ public class SlackLoadingView extends View {
         return (int) (dp * scale + 0.5f);
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Log.e("eeee", "onAttachedToWindow: ");
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        Log.e("dedede", "onDetachedFromWindow: "+mAnimList.size() );
+        for (Animator anim :
+                mAnimList) {
+            anim.removeAllListeners();
+            anim.cancel();
+        }
+
+        mAnimList.clear();
+    }
 }

@@ -332,13 +332,21 @@ public class WebService {
     private List<Channel> getHD(int type) {
         List<Channel> channels = new ArrayList<>();
         Channel channel = new Channel("安徽卫视", "中国梦纪录片展播", type + "1");
+        channel.setLinkPath("http://221.6.85.155/live/ahws_800/ahws_800.m3u8");
         Channel channel1 = new Channel("广东卫视", "上午剧场:欢乐颂(35)", type + "2");
-        Channel channel2 = new Channel("深圳卫视", "精品剧场:利箭纵横(38)", type + "3");
+        channel1.setLinkPath("http://221.6.85.155/live/gdws_800/gdws_800.m3u8");
+        Channel channel2 = new Channel("东方卫视", "精品剧场:利箭纵横(38)", type + "3");
+        channel2.setLinkPath("http://221.6.85.155/live/dfws_800/dfws_800.m3u8");
         Channel channel3 = new Channel("江苏卫视", "上午剧场:小别离", type + "4");
+        channel3.setLinkPath("http://221.6.85.155/live/jsws_800/jsws_800.m3u8");
         Channel channel4 = new Channel("湖南卫视", "偶像独播剧场:璀璨人生(21)", type + "5");
+        channel3.setLinkPath("http://221.6.85.155/live/jsws_800/jsws_800.m3u8");
         Channel channel5 = new Channel("浙江卫视", "经典剧场:漂洋过海来看你 30", type + "6");
+        channel5.setLinkPath("http://221.6.85.155/live/zjws_800/zjws_800.m3u8");
         Channel channel6 = new Channel("CCTV-5体育", "直播2016/2017赛季NBA季后赛-灰熊-马刺(二)", type + "7");
+        channel6.setLinkPath("http://221.6.85.155/live/cctv5_800/cctv5_800.m3u8");
         Channel channel7 = new Channel("CCTV-6电影", "电影 鸿门宴传奇 中国", type + "8");
+        channel7.setLinkPath("http://221.6.85.155/live/cctv6_800/cctv6_800.m3u8");
 
 
         channels.add(channel);

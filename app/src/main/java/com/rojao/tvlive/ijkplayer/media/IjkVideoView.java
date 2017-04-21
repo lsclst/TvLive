@@ -252,6 +252,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
      *                to disallow or allow cross domain redirection.
      */
     private void setVideoURI(Uri uri, Map<String, String> headers) {
+        initRenders();
         mUri = uri;
         mHeaders = headers;
         mSeekWhenPrepared = 0;
@@ -265,8 +266,11 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
 
     public void stopPlayback() {
         if (mMediaPlayer != null) {
+            Log.e(TAG, "before stopPlayback: "+mSurfaceHolder.getSurfaceHolder().getSurface().isValid() );
             mMediaPlayer.stop();
             mMediaPlayer.release();
+            Log.e(TAG, "after stopPlayback: "+mSurfaceHolder.getSurfaceHolder().getSurface().isValid() );
+//            mMediaPlayer.setDisplay(null);
             mMediaPlayer = null;
             if (mHudViewHolder != null)
                 mHudViewHolder.setMediaPlayer(null);
@@ -735,9 +739,11 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
      */
     public void release(boolean cleartargetstate) {
         if (mMediaPlayer != null) {
+            Log.e(TAG, "before release: "+mSurfaceHolder.getSurfaceHolder().getSurface().isValid() );
             mMediaPlayer.reset();
             mMediaPlayer.release();
             mMediaPlayer = null;
+            Log.e(TAG, "after release: "+mSurfaceHolder.getSurfaceHolder().getSurface().isValid() );
             // REMOVED: mPendingSubtitleTracks.clear();
             mCurrentState = STATE_IDLE;
             if (cleartargetstate) {
@@ -819,7 +825,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     public void start() {
 
         if (isInPlaybackState()) {
-            Log.e(TAG, "start: "+mSurfaceHolder.getSurfaceHolder().getSurface().isValid() );
+
             Log.e(TAG, "start: "+mSurfaceHolder.getSurfaceHolder() +"view = "+ getmRenderView().getView());
             mMediaPlayer.start();
             mCurrentState = STATE_PLAYING;
@@ -959,6 +965,9 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
 
     private void initRenders() {
         mAllRenders.clear();
+        if (mRenderView != null){
+            removeView(mRenderView.getView());
+        }
 
         if (mSettings.getEnableSurfaceView())
             mAllRenders.add(RENDER_SURFACE_VIEW);

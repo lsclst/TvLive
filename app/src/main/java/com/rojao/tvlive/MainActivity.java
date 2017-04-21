@@ -46,23 +46,17 @@ public class MainActivity extends AppCompatActivity {
             mChannelDialog.dismiss();
             startLoading();
             mVideoPlayer.stopPlayback();
-            mVideoPlayer.release(true);
-            mVideoPlayer.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Log.e(TAG, "run: " + linkPath);
-                    if (!TextUtils.isEmpty(linkPath)) {
-                        if (channelNo.equals("01")) {
+//            mVideoPlayer.release(true);
+            if (!TextUtils.isEmpty(linkPath)) {
+                if (channelNo.equals("01")) {
 
-                            mVideoPlayer.setVideoPath("http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4");
-                        } else {
+                    mVideoPlayer.setVideoPath("http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4");
+                } else {
 
-                            mVideoPlayer.setVideoPath(linkPath);
-                        }
-                        mVideoPlayer.start();
-                    }
+                    mVideoPlayer.setVideoPath(linkPath);
                 }
-            }, 300);
+                mVideoPlayer.start();
+            }
         }
 
     };
@@ -92,15 +86,13 @@ public class MainActivity extends AppCompatActivity {
         mType = getIntent().getStringExtra(KEY_TYPE);
         mVideoPath = getIntent().getStringExtra(Key_VIDEOPATH);
         Log.e(TAG, "onCreate: " + mType + " " + mVideoPath);
-        if (TYPE_LIVE.equals(mType)) {
-            mVideoPath = DEFAULT_PATH;
-        } else {
+        if (!TYPE_LIVE.equals(mType)) {
             mType = TYPE_LIVE;
         }
-
         if (TextUtils.isEmpty(mVideoPath)) {
             mVideoPath = DEFAULT_PATH;
         }
+        startLoading();
         initVideo();
     }
 
@@ -188,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.e(TAG, "keycode: " + keyCode);
+        Log.e(TAG, "keycode: " + keyCode + "type = "+mType);
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && TYPE_LIVE.equals(mType)) {
             if (mChannelDialog == null) {
                 mChannelDialog = new ChannelDialog(this, mOnChannelItemClickListener);
