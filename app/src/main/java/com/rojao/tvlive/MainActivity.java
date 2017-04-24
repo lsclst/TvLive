@@ -159,29 +159,29 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && TYPE_LIVE.equals(mType) && mIsCanChannge) {
             mIsCanChannge = false;
+            mCurChannel++;
+            if (mCurChannel >= WebService.getInstance().getAllChannels().size()) {
+                mCurChannel = WebService.getInstance().getAllChannels().size() - 1;
+            }
             String path = WebService.getInstance().getAllChannels().get(mCurChannel).getLinkPath();
             if (!TextUtils.isEmpty(path)) {
                 mVideoPlayer.setVideoPath(path);
             }
             mVideoPlayer.start();
-            mCurChannel++;
-            if (mCurChannel >= WebService.getInstance().getAllChannels().size()) {
-                mCurChannel = WebService.getInstance().getAllChannels().size() - 1;
-            }
             startLoading();
             mHandler.removeCallbacks(mChangeChannelRunnable);
             mHandler.postDelayed(mChangeChannelRunnable, 200);
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP && TYPE_LIVE.equals(mType) && mIsCanChannge) {
             mIsCanChannge = false;
+            mCurChannel--;
+            if (mCurChannel <= 0) {
+                mCurChannel = 0;
+            }
             String path = WebService.getInstance().getAllChannels().get(mCurChannel).getLinkPath();
             if (!TextUtils.isEmpty(path)) {
                 mVideoPlayer.setVideoPath(path);
             }
             mVideoPlayer.start();
-            mCurChannel--;
-            if (mCurChannel <= 0) {
-                mCurChannel = 0;
-            }
             startLoading();
             mHandler.removeCallbacks(mChangeChannelRunnable);
             mHandler.postDelayed(mChangeChannelRunnable, 200);
