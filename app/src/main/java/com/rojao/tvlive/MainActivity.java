@@ -2,6 +2,7 @@ package com.rojao.tvlive;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.rojao.tvlive.ijkplayer.media.IjkVideoView;
+import com.rojao.tvlive.network.WebService;
 import com.rojao.tvlive.weiget.ChannelDialog;
 import com.rojao.tvlive.weiget.RecommendDialog;
 import com.rojao.tvlive.weiget.channel.ChannelView;
@@ -38,6 +40,15 @@ public class MainActivity extends AppCompatActivity {
     private SlackLoadingView mLoadingView;
     private ChannelDialog mChannelDialog;
     private RecommendDialog mRecommendDialog;
+    private Handler mHandler = new Handler();
+    private boolean mIsCanChannge = true;
+    private Runnable mChangeChannelRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mIsCanChannge = true;
+        }
+    };
+    private int mCurChannel;
 
 
     private ChannelView.OnChannelItemClickListener mOnChannelItemClickListener = new ChannelView.OnChannelItemClickListener() {
@@ -46,15 +57,9 @@ public class MainActivity extends AppCompatActivity {
             mChannelDialog.dismiss();
             startLoading();
             mVideoPlayer.stopPlayback();
-            //            mVideoPlayer.release(true);
             if (!TextUtils.isEmpty(linkPath)) {
-                if (channelNo.equals("01")) {
 
-                    mVideoPlayer.setVideoPath("http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4");
-                } else {
-
-                    mVideoPlayer.setVideoPath(linkPath);
-                }
+                mVideoPlayer.setVideoPath(linkPath);
                 mVideoPlayer.start();
             }
         }
@@ -170,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Log.e(TAG, "onStop: " );
+        Log.e(TAG, "onStop: ");
         if (!mVideoPlayer.isBackgroundPlayEnabled()) {
             mVideoPlayer.stopPlayback();
             mVideoPlayer.release(true);
@@ -189,6 +194,34 @@ public class MainActivity extends AppCompatActivity {
             if (!mChannelDialog.isShowing()) {
                 mChannelDialog.show(getWindow().getDecorView());
             }
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && TYPE_LIVE.equals(mType) && mIsCanChannge) {
+            mIsCanChannge = false;
+            String path = WebService.getInstance().getAllChannels().get(mCurChannel).getLinkPath();
+            if (!TextUtils.isEmpty(path)) {
+                mVideoPlayer.setVideoPath(path);
+            }
+            mVideoPlayer.start();
+            mCurChannel++;
+            if (mCurChannel >= WebService.getInstance().getAllChannels().size()) {
+                mCurChannel = WebService.getInstance().getAllChannels().size() - 1;
+            }
+            startLoading();
+            mHandler.removeCallbacks(mChangeChannelRunnable);
+            mHandler.postDelayed(mChangeChannelRunnable, 200);
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP && TYPE_LIVE.equals(mType) && mIsCanChannge) {
+            mIsCanChannge = false;
+            String path = WebService.getInstance().getAllChannels().get(mCurChannel).getLinkPath();
+            if (!TextUtils.isEmpty(path)) {
+                mVideoPlayer.setVideoPath(path);
+            }
+            mVideoPlayer.start();
+            mCurChannel--;
+            if (mCurChannel <= 0) {
+                mCurChannel = 0;
+            }
+            startLoading();
+            mHandler.removeCallbacks(mChangeChannelRunnable);
+            mHandler.postDelayed(mChangeChannelRunnable, 200);
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
             if (mRecommendDialog == null) {
                 mRecommendDialog = new RecommendDialog(this, mOnRecommendItemClickListener);

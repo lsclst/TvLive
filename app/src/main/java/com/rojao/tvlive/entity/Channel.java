@@ -1,5 +1,7 @@
 package com.rojao.tvlive.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by lsc on 2017/4/17 0017.
  *
@@ -7,10 +9,13 @@ package com.rojao.tvlive.entity;
  * @desc ${TODO}
  */
 public class Channel {
+    @SerializedName("channelCode")
     private String channelNo;
     private String curChannel;
+    @SerializedName("channelName")
     private String channelTitle;
     private boolean hasLookBack;
+    @SerializedName("playUrl")
     private String linkPath;
 
     public String getLinkPath() {
