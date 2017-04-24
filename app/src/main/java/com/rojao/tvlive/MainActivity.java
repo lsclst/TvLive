@@ -29,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String Key_VIDEOPATH = "videoPath";
     private static final String TYPE_LIVE = "live";
     private static final String TYPE_VOD = "vod";
-    //        private static final String DEFAULT_PATH = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
-    //    private static final String DEFAULT_PATH = "http://10.10.1.233:9001/hb/hb/20170410105021.mp4";
     private static final String DEFAULT_PATH = "http://221.6.85.155/live/hnws_800/hnws_800.m3u8";
 
     private String mVideoPath;
@@ -122,46 +120,12 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case IjkMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
                     case IjkMediaPlayer.MEDIA_INFO_BUFFERING_END:
-                        Log.e(TAG, "onInfo: buffering end");
                         stopLoading();
                         break;
                 }
                 return false;
             }
         });
-
-        //        mVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
-        //            @Override
-        //            public void onCompletion(IMediaPlayer mp) {
-        //                mLoadingLayout.setVisibility(View.VISIBLE);
-        //                mVideoView.stopPlayback();
-        //                mVideoView.release(true);
-        //                mVideoView.setVideoURI(Uri.parse(mVideoUrl));
-        //            }
-        //        });
-
-        //        mVideoView.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
-        //            @Override
-        //            public boolean onError(IMediaPlayer mp, int what, int extra) {
-        //                if (mRetryTimes > CONNECTION_TIMES) {
-        //                    new AlertDialog.Builder(LiveActivity.this)
-        //                            .setMessage("节目暂时不能播放")
-        //                            .setPositiveButton(R.string.VideoView_error_button,
-        //                                    new DialogInterface.OnClickListener() {
-        //                                        public void onClick(DialogInterface dialog, int whichButton) {
-        //                                            LiveActivity.this.finish();
-        //                                        }
-        //                                    })
-        //                            .setCancelable(false)
-        //                            .show();
-        //                } else {
-        //                    mVideoView.stopPlayback();
-        //                    mVideoView.release(true);
-        //                    mVideoView.setVideoURI(Uri.parse(mVideoUrl));
-        //                }
-        //                return false;
-        //            }
-        //        });
 
     }
 
@@ -175,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Log.e(TAG, "onStop: ");
         if (!mVideoPlayer.isBackgroundPlayEnabled()) {
             mVideoPlayer.stopPlayback();
             mVideoPlayer.release(true);

@@ -17,7 +17,7 @@
 	<TextView android:id="@+id/id_title" android:layout_width="wrap_content"
 	          android:layout_height="wrap_content"
 	          android:layout_gravity="bottom|left"
-	          android:layout_marginBottom="8dp"
+	          android:layout_marginBottom="12dp"
 	          android:layout_marginLeft="8dp"
 	          android:background="#8b060608"
 	          android:text="hello"

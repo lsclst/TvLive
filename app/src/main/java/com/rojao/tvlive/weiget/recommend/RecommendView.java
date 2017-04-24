@@ -11,8 +11,6 @@ import android.widget.TextView;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.rojao.tvlive.R;
 import com.rojao.tvlive.entity.Recommend;
-import com.rojao.tvlive.weiget.bridge.MainUpView;
-import com.rojao.tvlive.weiget.bridge.RecyclerViewBridge;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,16 +34,10 @@ public class RecommendView extends LinearLayout {
             R.color.recommendColor_8
     );
 
-    private static final List<Integer> mImgs = Arrays.asList(R.mipmap.recommend1,
-            R.mipmap.recommend2, R.mipmap.recommend3,
-            R.mipmap.recommend4, R.mipmap.recommend4,
-            R.mipmap.recommend5, R.mipmap.recommend1,
-            R.mipmap.recommend4, R.mipmap.recommend4);
 
     private TextView mTv_title, mTv_Audience;
     private RecommendListAdapter mAdapter;
     private List<Recommend> mRecommends;
-    private MainUpView mainUpView;
 
     public String getTv_title() {
         return mTv_title.getText().toString();
@@ -64,24 +56,20 @@ public class RecommendView extends LinearLayout {
     }
 
     private TvRecyclerView mTvRecyclerView;
-    private RecyclerViewBridge mRecyclerViewBridge;
     private TvRecyclerView.OnItemListener mItemListener = new TvRecyclerView.OnItemListener() {
         @Override
         public void onItemPreSelected(TvRecyclerView parent, View itemView, int position) {
-
-
-            mRecyclerViewBridge.setUnFocusView(itemView);
+            itemView.animate().scaleX(1.0f).scaleY(1.0f).setDuration(300).start();
         }
 
         @Override
         public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
-
-            mRecyclerViewBridge.setFocusView(itemView, 1.2f);
+            itemView.animate().scaleX(1.2f).scaleY(1.2f).setDuration(300).start();
         }
 
         @Override
         public void onReviseFocusFollow(TvRecyclerView parent, View itemView, int position) {
-            mRecyclerViewBridge.setFocusView(itemView, 1.2f);
+            itemView.animate().scaleX(1.2f).scaleY(1.2f).setDuration(300).start();
         }
 
         @Override
@@ -110,11 +98,6 @@ public class RecommendView extends LinearLayout {
         LinearLayout container = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.recommend_layout, this, true);
         mTv_title = (TextView) container.findViewById(R.id.id_title);
         mTv_Audience = (TextView) container.findViewById(R.id.id_audience);
-        mainUpView = (MainUpView) findViewById(R.id.id_mainUpView);
-        mainUpView.setEffectBridge(new RecyclerViewBridge());
-        mRecyclerViewBridge = (RecyclerViewBridge) mainUpView.getEffectBridge();
-        mRecyclerViewBridge.setTranDurAnimTime(200);
-        mRecyclerViewBridge.setUpRectResource(R.drawable.focus_border);
         mTvRecyclerView = (TvRecyclerView) container.findViewById(R.id.id_recommend_list);
         mTvRecyclerView.setOnItemListener(mItemListener);
         mTvRecyclerView.setSpacingWithMargins(10, 8);
