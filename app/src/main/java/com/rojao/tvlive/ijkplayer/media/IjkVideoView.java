@@ -163,7 +163,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         if (mRenderView != null) {
             if (mMediaPlayer != null)
                 mMediaPlayer.setDisplay(null);
-            Log.e(TAG, "setRenderView: remove all renderview" );
+            Log.e(TAG, "setRenderView: remove all renderview");
             View renderUIView = mRenderView.getView();
             mRenderView.removeRenderCallback(mSHCallback);
             mRenderView = null;
@@ -268,7 +268,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
             mMediaPlayer.release();
-//            mMediaPlayer.setDisplay(null);
+            //            mMediaPlayer.setDisplay(null);
             mMediaPlayer = null;
             if (mHudViewHolder != null)
                 mHudViewHolder.setMediaPlayer(null);
@@ -325,7 +325,10 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                         }
                         ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 1);
                         ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 0);
-
+                        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzemaxduration", 100L);
+                        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 10240L);
+                        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "flush_packets", 1L);
+                        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 0L);
                         ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "http-detect-range-support", 0);
 
                         ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_CODEC, "skip_loop_filter", 48);
@@ -483,7 +486,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 // We don't know the video size yet, but should start anyway.
                 // The video size might be reported to us later.
                 if (mTargetState == STATE_PLAYING) {
-                    Log.e(TAG, "onPrepared: start 2" );
+                    Log.e(TAG, "onPrepared: start 2");
                     start();
                 }
             }
@@ -658,7 +661,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
 
     // REMOVED: mSHCallback
     private void bindSurfaceHolder(IMediaPlayer mp, IRenderView.ISurfaceHolder holder) {
-        Log.e(TAG, "bindSurfaceHolder: " );
+        Log.e(TAG, "bindSurfaceHolder: ");
         if (mp == null) {
             Log.d(TAG, "mp is null");
             return;
@@ -690,7 +693,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 if (mSeekWhenPrepared != 0) {
                     seekTo(mSeekWhenPrepared);
                 }
-                Log.e(TAG, "onSurfaceChanged: start 3" );
+                Log.e(TAG, "onSurfaceChanged: start 3");
                 start();
             }
         }
@@ -703,11 +706,10 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
             }
 
             mSurfaceHolder = holder;
-            if (mMediaPlayer != null){
-                Log.e(TAG, "onSurfaceCreated: bindholder" );
+            if (mMediaPlayer != null) {
+                Log.e(TAG, "onSurfaceCreated: bindholder");
                 bindSurfaceHolder(mMediaPlayer, holder);
-            }
-            else
+            } else
                 openVideo();
         }
 
@@ -718,7 +720,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 return;
             }
 
-            Log.e(TAG, "onSurfaceDestroyed: " );
+            Log.e(TAG, "onSurfaceDestroyed: ");
             // after we return from this we can't use the surface any more
             mSurfaceHolder = null;
             // REMOVED: if (mMediaController != null) mMediaController.hide();
@@ -737,11 +739,11 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
      */
     public void release(boolean cleartargetstate) {
         if (mMediaPlayer != null) {
-            Log.e(TAG, "before release: "+mSurfaceHolder.getSurfaceHolder().getSurface().isValid() );
+            Log.e(TAG, "before release: " + mSurfaceHolder.getSurfaceHolder().getSurface().isValid());
             mMediaPlayer.reset();
             mMediaPlayer.release();
             mMediaPlayer = null;
-            Log.e(TAG, "after release: "+mSurfaceHolder.getSurfaceHolder().getSurface().isValid() );
+            Log.e(TAG, "after release: " + mSurfaceHolder.getSurfaceHolder().getSurface().isValid());
             // REMOVED: mPendingSubtitleTracks.clear();
             mCurrentState = STATE_IDLE;
             if (cleartargetstate) {
@@ -791,7 +793,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 return true;
             } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY) {
                 if (!mMediaPlayer.isPlaying()) {
-                    Log.e(TAG, "onKeyDown: stat 5" );
+                    Log.e(TAG, "onKeyDown: stat 5");
                     start();
                     mMediaController.hide();
                 }
@@ -824,7 +826,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
 
         if (isInPlaybackState()) {
 
-            Log.e(TAG, "start: "+mSurfaceHolder.getSurfaceHolder() +"view = "+ getmRenderView().getView());
+            Log.e(TAG, "start: " + mSurfaceHolder.getSurfaceHolder() + "view = " + getmRenderView().getView());
             mMediaPlayer.start();
             mCurrentState = STATE_PLAYING;
         }

@@ -21,7 +21,7 @@
 				android:layout_height="wrap_content"
 
 				android:layout_marginLeft="10dp"
-				android:text="直播推荐"
+				android:text="点播推荐"
 				android:textColor="@android:color/white"/>
 			<TextView
 				android:id="@+id/id_audience"

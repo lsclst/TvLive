@@ -1,13 +1,28 @@
 package com.rojao.tvlive.network;
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.rojao.tvlive.entity.BackLookEPG;
 import com.rojao.tvlive.entity.Channel;
 import com.rojao.tvlive.entity.Recommend;
+import com.rojao.tvlive.network.backlookdetail.VodUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by lsc on 2017/4/17 0017.
@@ -183,13 +198,19 @@ public class WebService {
             "  }\n" +
             "]";
 
+    private static final String BASE_EPG_URL = "http://122.97.219.210/cmsRojao/getProgramIndexList?dateTime=%s";
+    private static final String TAG = WebService.class.getSimpleName();
     private static volatile WebService Instance;
     private List<Channel> allChannels;
     private Gson mGson = new Gson();
+    private OkHttpClient mOkHttpClient;
+    private Map<Integer, List<BackLookEPG>> mCache = new HashMap<>();
 
     private WebService() {
         allChannels = mGson.fromJson(ALL_CHANNEL_JSON, new TypeToken<List<Channel>>() {
         }.getType());
+
+        mOkHttpClient = new OkHttpClient();
     }
 
     public List<Channel> getAllChannels() {
@@ -509,5 +530,60 @@ public class WebService {
         Collections.shuffle(recommends);
         return recommends;
 
+    }
+
+    public interface BackLookEPGCallBack {
+        void success(int pos, List<BackLookEPG> backLookEPGs);
+
+        void faile(IOException e);
+    }
+
+    public void getBackLookEPG(final int dayOfWeek, String date, final BackLookEPGCallBack callback) {
+        if (mCache.get(dayOfWeek) != null && mCache.get(dayOfWeek).size() > 0) {
+            Log.e(TAG, "getBackLookEPG: from cache" + dayOfWeek);
+            callback.success(dayOfWeek, mCache.get(dayOfWeek));
+            return;
+        }
+        String url = String.format(Locale.getDefault(), BASE_EPG_URL, date);
+        Log.e(TAG, "getBackLookEPG: " + url);
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+        mOkHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callback.faile(e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                List<BackLookEPG> backLookEPGs = mGson.fromJson(result, new TypeToken<List<BackLookEPG>>() {
+                }.getType());
+                mCache.put(dayOfWeek, backLookEPGs);
+                callback.success(dayOfWeek, backLookEPGs);
+            }
+        });
+    }
+
+    public interface getEpgDetaiLinkCallBack {
+        void success(String link);
+
+        void faile();
+    }
+
+    public void getEPGDetail(final String channelId, final String assertId, final getEpgDetaiLinkCallBack callback) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String link = VodUtil.getReseeUrlFromStreamControl(channelId, assertId);
+                if (TextUtils.isEmpty(link)) {
+                    callback.faile();
+                } else {
+                    callback.success(link);
+                }
+            }
+        }).start();
     }
 }

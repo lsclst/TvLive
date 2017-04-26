@@ -16,11 +16,15 @@ import android.widget.TextView;
 
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.rojao.tvlive.R;
+import com.rojao.tvlive.entity.BackLookEPG;
+import com.rojao.tvlive.network.WebService;
 import com.rojao.tvlive.weiget.channel.ChannelView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by lsc on 2017/4/5 0005.
@@ -33,6 +37,12 @@ public class BackLookView extends FrameLayout {
     private TvRecyclerView mBackLookDateList, mBackLookDetailList;
     private boolean isGoBackToChannel;
     private ChannelView mChannelView;
+    private Runnable mgetEpgRunnable;
+    private List<BackLookEPG> mBackLookEPGs;
+    private int dayPos;
+    private boolean isFirstTimeIn;
+    private BackLookDateAdapter mBackLookDateAdapter;
+    private DetailAdapter mDetailAdapter;
     private ChannelView.OnChannelItemClickListener mOnChannelItemClickListener;
 
     public void setOnChannelItemClickListener(ChannelView.OnChannelItemClickListener listener) {
@@ -47,10 +57,40 @@ public class BackLookView extends FrameLayout {
         }
 
         @Override
-        public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
+        public void onItemSelected(final TvRecyclerView parent, View itemView, int position) {
 
-            Log.e(TAG, "position = " + position);
-            Log.e(TAG, mBackLookDateList.hasFocus() + "");
+            dayPos = position;
+            if (mgetEpgRunnable != null) {
+                getHandler().removeCallbacks(mgetEpgRunnable);
+            } else {
+                mgetEpgRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        WebService.getInstance().getBackLookEPG(dayPos, "2017-" + mBackLookDateAdapter.getDateBeanList().get(dayPos).getDay(), new WebService.BackLookEPGCallBack() {
+                            @Override
+                            public void success(int pos, final List<BackLookEPG> backLookEPGs) {
+                                getHandler().post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mBackLookEPGs = backLookEPGs;
+                                        mDetailAdapter.setDatas(backLookEPGs);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void faile(IOException e) {
+
+                            }
+                        });
+                    }
+                };
+            }
+            if (!isFirstTimeIn) {
+
+                postDelayed(mgetEpgRunnable, 200);
+            }
+
         }
 
         @Override
@@ -82,8 +122,29 @@ public class BackLookView extends FrameLayout {
 
         @Override
         public void onItemClick(TvRecyclerView parent, View itemView, int position) {
+            setVisibility(GONE);
             if (mOnChannelItemClickListener != null) {
-                mOnChannelItemClickListener.onChannelItemClick("backlookNO", "backLookLink");
+
+                BackLookEPG backLookEPG = mBackLookEPGs.get(position);
+                WebService.getInstance().getEPGDetail(backLookEPG.getChannelId(), backLookEPG.getAssertId(), new WebService.getEpgDetaiLinkCallBack() {
+                    @Override
+                    public void success(final String link) {
+                        Log.e(TAG, "success: " + link);
+                        post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mOnChannelItemClickListener.onChannelItemClick("backlookNO", link);
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void faile() {
+
+                    }
+                });
+
             }
 
         }
@@ -109,7 +170,8 @@ public class BackLookView extends FrameLayout {
         this.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mBackLookDateList.setSelection(0);
+                isFirstTimeIn = false;
+                mBackLookDateList.setSelection(3);
             }
         }, 250);
         isGoBackToChannel = false;
@@ -124,8 +186,8 @@ public class BackLookView extends FrameLayout {
         mBackLookDateList.setOnItemListener(mBackLookDateListener);
         mBackLookDetailList.setOnItemListener(mBackLookDetailListListener);
 
-        mBackLookDateList.setAdapter(new BackLookDateAdapter());
-        mBackLookDetailList.setAdapter(new DetailAdapter());
+        mBackLookDateList.setAdapter(mBackLookDateAdapter = new BackLookDateAdapter());
+        mBackLookDetailList.setAdapter(mDetailAdapter = new DetailAdapter());
         mAnimSlideIn = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_in_left);
 
     }
@@ -137,15 +199,20 @@ public class BackLookView extends FrameLayout {
         private List<DateBean> mDateBeanList = new ArrayList<>();
         private static final String[] sWeeks = new String[]{"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
 
+        public List<DateBean> getDateBeanList() {
+            return mDateBeanList;
+        }
+
         public BackLookDateAdapter() {
             Calendar now = Calendar.getInstance();
+            now.set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH) - 3);
             for (int i = 0; i < 7; i++) {
                 int month = now.get(Calendar.MONTH) + 1;
                 int day = now.get(Calendar.DAY_OF_MONTH);
                 int week = now.get(Calendar.DAY_OF_WEEK) - 1;
                 DateBean bean = new DateBean();
-                bean.setDay(String.format("%2d -%2d", month, day));
-                bean.setWeek(i == 0 ? "今天" : sWeeks[week]);
+                bean.setDay(String.format(Locale.getDefault(), "%2d-%2d", month, day));
+                bean.setWeek(i == 3 ? "今天" : sWeeks[week]);
                 mDateBeanList.add(bean);
                 now.set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH) + 1);
 
@@ -210,6 +277,12 @@ public class BackLookView extends FrameLayout {
     }
 
     private static class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.DetailHolder> {
+        List<BackLookEPG> mDatas = new ArrayList<>();
+
+        public void setDatas(List<BackLookEPG> datas) {
+            mDatas = datas;
+            notifyDataSetChanged();
+        }
 
         @Override
         public DetailHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -220,13 +293,14 @@ public class BackLookView extends FrameLayout {
 
         @Override
         public void onBindViewHolder(DetailHolder holder, int position) {
-            holder.tv_time.setText("10:00");
-            holder.tv_title.setText("生活大爆炸(2)");
+            BackLookEPG backLookEPG = mDatas.get(position);
+            holder.tv_time.setText(String.format(Locale.getDefault(), "%2s - %2s", backLookEPG.getStartTime(), backLookEPG.getEndTime()));
+            holder.tv_title.setText(backLookEPG.getProgramName());
         }
 
         @Override
         public int getItemCount() {
-            return 9;
+            return mDatas.size();
         }
 
         class DetailHolder extends RecyclerView.ViewHolder {
@@ -248,19 +322,15 @@ public class BackLookView extends FrameLayout {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
 
-        if (event.getAction() == KeyEvent.ACTION_DOWN && (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
-                || event.getKeyCode() == KeyEvent.KEYCODE_BACK)) {
-            if (mBackLookDateList.hasFocus() && mBackLookDateList.getSelectedPosition() == 0) {
-                if (!isGoBackToChannel) {
-                    showChannelView();
-                    Log.e(TAG, "showChannelView: ");
+        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            if (!isGoBackToChannel) {
+                showChannelView();
+                Log.e(TAG, "showChannelView: ");
 
-                    return true;
-                }
-                isGoBackToChannel = true;
-
-
+                return true;
             }
+            isGoBackToChannel = true;
+
         }
 
         return super.dispatchKeyEvent(event);
@@ -275,4 +345,13 @@ public class BackLookView extends FrameLayout {
         }
     }
 
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        if (visibility == VISIBLE) {
+
+            isFirstTimeIn = true;
+            Log.e(TAG, "setVisibility: ");
+        }
+    }
 }

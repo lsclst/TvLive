@@ -14,6 +14,8 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources true
+            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -27,7 +29,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'recyclerview-v7'
     }
     compile 'com.android.support:recyclerview-v7:24.2.1'
-    compile project(':superijkplayer')
+    compile(project(':superijkplayer')) {
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+    }
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
 }

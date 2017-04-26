@@ -22,7 +22,6 @@
 		          android:layout_weight="3"
 		          android:gravity="center"
 		          android:singleLine="true"
-		          android:text="456789"
 		          android:textColor="@android:color/white"
 		/>
 	</LinearLayout>
@@ -35,7 +34,6 @@
 	          android:focusable="true"
 	          android:gravity="center"
 	          android:singleLine="true"
-	          android:text="1223"
 	          android:textSize="12sp"
 	          android:textColor="@android:color/white"/>
 

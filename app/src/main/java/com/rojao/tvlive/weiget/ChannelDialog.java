@@ -61,6 +61,8 @@ public class ChannelDialog {
     public void show(View parent) {
         if (mPopupWindow != null && !mPopupWindow.isShowing()) {
             mPopupWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
+                mBackLookView.setVisibility(View.GONE);
+                mBackLookView.showChannelView();
             mChannelView.selectLastPos();
         }
     }

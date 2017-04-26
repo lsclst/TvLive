@@ -20,7 +20,6 @@
 	          android:layout_marginBottom="12dp"
 	          android:layout_marginLeft="8dp"
 	          android:background="#8b060608"
-	          android:text="hello"
 	          android:textColor="@android:color/white"
 	          android:textSize="20sp"/>
 
