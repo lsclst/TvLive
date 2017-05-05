@@ -9,10 +9,9 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.rojao.tvlive.R;
@@ -123,6 +122,7 @@ public class BackLookView extends FrameLayout {
         @Override
         public void onItemClick(TvRecyclerView parent, View itemView, int position) {
             setVisibility(GONE);
+            final int pos = position;
             if (mOnChannelItemClickListener != null) {
 
                 BackLookEPG backLookEPG = mBackLookEPGs.get(position);
@@ -133,7 +133,7 @@ public class BackLookView extends FrameLayout {
                         post(new Runnable() {
                             @Override
                             public void run() {
-                                mOnChannelItemClickListener.onChannelItemClick("backlookNO", link);
+                                mOnChannelItemClickListener.onChannelItemClick(pos, "backlookNO", link);
                             }
                         });
 
@@ -141,7 +141,13 @@ public class BackLookView extends FrameLayout {
 
                     @Override
                     public void faile() {
-
+                        post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), "没有详细信息", Toast.LENGTH_LONG).show();
+                                mOnChannelItemClickListener.faile();
+                            }
+                        });
                     }
                 });
 
@@ -149,7 +155,6 @@ public class BackLookView extends FrameLayout {
 
         }
     };
-    private Animation mAnimSlideIn;
 
     public BackLookView(Context context) {
         this(context, null);
@@ -188,7 +193,6 @@ public class BackLookView extends FrameLayout {
 
         mBackLookDateList.setAdapter(mBackLookDateAdapter = new BackLookDateAdapter());
         mBackLookDetailList.setAdapter(mDetailAdapter = new DetailAdapter());
-        mAnimSlideIn = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_in_left);
 
     }
 
@@ -211,7 +215,7 @@ public class BackLookView extends FrameLayout {
                 int day = now.get(Calendar.DAY_OF_MONTH);
                 int week = now.get(Calendar.DAY_OF_WEEK) - 1;
                 DateBean bean = new DateBean();
-                bean.setDay(String.format(Locale.getDefault(), "%2d-%2d", month, day));
+                bean.setDay(String.format(Locale.getDefault(), "%02d-%02d", month, day));
                 bean.setWeek(i == 3 ? "今天" : sWeeks[week]);
                 mDateBeanList.add(bean);
                 now.set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH) + 1);
@@ -351,7 +355,6 @@ public class BackLookView extends FrameLayout {
         if (visibility == VISIBLE) {
 
             isFirstTimeIn = true;
-            Log.e(TAG, "setVisibility: ");
         }
     }
 }
