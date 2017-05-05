@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:focusable="true"
+                android:orientation="vertical"
+                android:padding="16dp"
+>
+	<!--字幕-->
+	<FrameLayout android:id="@+id/id_subtitle"
+	             android:layout_width="match_parent"
+	             android:layout_height="match_parent"
+	             android:visibility="gone">
+
+		<TextView android:layout_width="match_parent" android:layout_height="45dp"
+		          android:layout_marginLeft="150dp"
+		          android:layout_marginRight="150dp"
+		          android:ellipsize="marquee"
+		          android:focusable="true"
+		          android:gravity="center"
+		          android:maxLines="1"
+		          android:singleLine="true"
+		          android:text="@string/subtitle"
+		          android:textColor="@android:color/white"
+		          android:textSize="40sp"
+		/>
+		<ImageView android:layout_width="150dp" android:layout_height="150dp"
+		           android:layout_gravity="bottom|right"
+		           android:layout_margin="50dp"
+		           android:src="@mipmap/wx_gzgdwl"/>
+	</FrameLayout>
+	<!--缴费-->
+	<TextView android:id="@+id/id_pay_tips"
+	          android:layout_width="wrap_content"
+	          android:layout_height="wrap_content"
+	          android:layout_centerHorizontal="true"
+	          android:clickable="true"
+	          android:drawableLeft="@drawable/mail"
+	          android:drawablePadding="16dp"
+	          android:focusable="true"
+	          android:gravity="center_horizontal"
+	          android:text="本月份的电费账单！"
+	          android:textColor="@android:color/white"
+	          android:textSize="32sp"
+	          android:visibility="gone"
+	/>
+
+	<!--广告提示-->
+	<ImageView android:id="@+id/id_ad_iv" android:layout_width="wrap_content"
+	           android:layout_height="wrap_content"
+	           android:layout_alignParentRight="true"
+	           android:layout_alignParentTop="true"
+	           android:layout_marginRight="50dp"
+	           android:layout_marginTop="150dp"
+	           android:clickable="true"
+	           android:focusable="true"/>
+	<!--轮播广告-->
+	<ViewFlipper android:id="@+id/id_ad_flipper"
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"
+	             android:layout_alignParentRight="true"
+	             android:layout_alignParentTop="true"
+	             android:animateFirstView="true"
+	             android:autoStart="true"
+	             android:clickable="true"
+	             android:flipInterval="3000"
+	             android:focusable="true"
+	             android:inAnimation="@android:anim/slide_in_left"
+	             android:outAnimation="@android:anim/slide_out_right"
+	             android:visibility="gone"
+	>
+		<ImageView
+			android:layout_width="200dp"
+			android:layout_height="150dp"
+			android:src="@mipmap/guizhoutuwen"
+		/>
+
+		<ImageView
+			android:layout_width="200dp"
+			android:layout_height="150dp"
+			android:src="@mipmap/pop2_channel8"/>
+
+		<ImageView
+			android:layout_width="200dp"
+			android:layout_height="150dp"
+			android:src="@mipmap/pop3_channel8"/>
+
+
+	</ViewFlipper>
+
+	<!--广告详情图片-->
+	<ImageView android:id="@+id/id_ad_detail" android:layout_width="match_parent"
+	           android:layout_height="match_parent"/>
+</RelativeLayout>
