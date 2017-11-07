@@ -68,8 +68,7 @@ public class ChannelView extends LinearLayout implements TvRecyclerView.OnInBord
     }
 
     public interface OnChannelItemClickListener {
-        void onChannelItemClick(int pos, String channelNo, String linkPath);
-        void faile();
+        void onChannelItemClick(String channelNo, String linkPath);
     }
 
     public void setOnChannelItemClickListener(OnChannelItemClickListener listener) {
@@ -144,7 +143,7 @@ public class ChannelView extends LinearLayout implements TvRecyclerView.OnInBord
             if (mListener != null) {
                 if (mChannels != null && mChannels.size() > 0) {
                     Channel channel = mChannels.get(position);
-                    mListener.onChannelItemClick(position,channel.getChannelNo(), channel.getLinkPath());
+                    mListener.onChannelItemClick(channel.getChannelNo(), channel.getLinkPath());
                 }
 
             }

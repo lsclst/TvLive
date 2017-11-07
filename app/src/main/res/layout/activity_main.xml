@@ -9,32 +9,38 @@
 	android:clipToPadding="false"
 	tools:context="com.rojao.tvlive.MainActivity">
 
-	<VideoView android:id="@+id/id_videoPlayer"
-	           android:layout_width="match_parent"
-	           android:layout_height="match_parent"/>
+	<TextView android:id="@+id/id_channel_no"
+	          android:layout_width="100dp"
+	          android:layout_height="100dp"
+	          android:layout_alignParentRight="true"
+	          android:layout_alignParentTop="true"
+	          android:gravity="center"
+	          android:text="2"
+	          android:textColor="@android:color/white"
+	          android:textSize="50sp"
+	          android:visibility="gone"/>
+
+
+	<ImageView android:id="@+id/id_iv_ad" android:layout_width="wrap_content"
+	           android:layout_height="wrap_content"
+	           android:layout_alignParentBottom="true"
+	           android:layout_alignParentRight="true"
+	           android:layout_marginBottom="20dp"
+	           android:background="@drawable/shadow_ad"
+	           android:clickable="true"
+	           android:focusable="true"
+	           android:padding="10dp"
+	           android:src="@mipmap/ic_launcher"
+	           android:visibility="gone"/>
+
+
+	<com.rojao.tvlive.ijkplayer.media.IjkVideoView android:id="@+id/id_videoPlayer"
+	                                               android:layout_width="match_parent"
+	                                               android:layout_height="match_parent"/>
 
 	<com.rojao.tvlive.weiget.loadingview.SlackLoadingView android:id="@+id/id_loadingView"
 	                                                      android:layout_width="200dp"
 	                                                      android:layout_height="200dp"
 	                                                      android:layout_centerInParent="true"
 	                                                      android:visibility="visible"/>
-	<LinearLayout
-		android:id="@+id/id_info_bar"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:layout_centerHorizontal="true"
-		android:layout_marginBottom="50dp"
-		android:visibility="gone"
-	>
-		<!--  android:layout_weight="8"-->
-
-		<ImageView android:id="@+id/id_info_bar_title" android:layout_width="wrap_content"
-		           android:layout_height="wrap_content"
-		/>
-		<!-- android:layout_weight="2"-->
-		<ImageView android:id="@+id/id_info_bar_ad" android:layout_width="wrap_content"
-		           android:layout_height="wrap_content"
-		/>
-	</LinearLayout>
 </RelativeLayout>
